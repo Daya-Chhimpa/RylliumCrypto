@@ -1,0 +1,67 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { FaTachometerAlt, FaWallet, FaClipboardList, FaCog, FaSignOutAlt } from "react-icons/fa";
+
+const NAV_TOP = [
+  { href: "/dashboard", label: "Dashboard", icon: FaTachometerAlt },
+  { href: "/wallets", label: "Wallets", icon: FaWallet },
+  { href: "/orders", label: "Orders", icon: FaClipboardList },
+];
+
+const NAV_BOTTOM = [
+  { href: "/settings", label: "Settings", icon: FaCog },
+  { href: "/", label: "Log Out", icon: FaSignOutAlt },
+];
+
+export default function Sidebar({ drawerOpen = false, onClose }) {
+  const pathname = usePathname();
+
+  return (
+    <aside className={`rl-sidebar ${drawerOpen ? "open" : ""}`}>
+      <div className="rl-brand">
+        <div className="rl-logo">R</div>
+        <span className="rl-brand-text">Ryllium</span>
+      </div>
+      <nav className="rl-nav">
+        {NAV_TOP.map(({ href, label, icon: Icon }) => {
+          const isActive = href === "/" ? pathname === "/" : pathname?.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`rl-nav-item ${isActive ? "active" : ""}`}
+              onClick={onClose}
+            >
+              <span className="rl-nav-icon" aria-hidden>
+                <Icon />
+              </span>
+              <span className="rl-nav-label">{label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      <nav className="rl-nav rl-nav-bottom">
+        {NAV_BOTTOM.map(({ href, label, icon: Icon }) => {
+          const isActive = href === "/" ? pathname === "/" : pathname?.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`rl-nav-item ${isActive ? "active" : ""}`}
+              onClick={onClose}
+            >
+              <span className="rl-nav-icon" aria-hidden>
+                <Icon />
+              </span>
+              <span className="rl-nav-label">{label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+}
+
+
