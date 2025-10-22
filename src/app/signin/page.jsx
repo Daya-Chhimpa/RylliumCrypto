@@ -12,6 +12,17 @@ export default function SignInPage() {
   const authStatus = useSelector((s) => s.auth.status);
   const authError = useSelector((s) => s.auth.error);
 
+  // If token exists, redirect away from sign-in
+  if (typeof window !== "undefined") {
+    const token = window.localStorage.getItem("authToken");
+    const hasAuthCookie = document.cookie.split("; ").some((c) => c.startsWith("auth=1"));
+    if (token && hasAuthCookie) {
+      const next = searchParams.get("next");
+      if (next) router.replace(next);
+      else router.replace("/dashboard");
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);

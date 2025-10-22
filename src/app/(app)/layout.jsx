@@ -10,7 +10,8 @@ export default function AppGroupLayout({ children }) {
   useEffect(() => {
     try {
       const hasAuthCookie = document.cookie.split("; ").some((c) => c.startsWith("auth=1"));
-      if (!hasAuthCookie) {
+      const hasLocalToken = typeof window !== "undefined" && !!window.localStorage.getItem("authToken");
+      if (!hasAuthCookie && !hasLocalToken) {
         const next = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/dashboard";
         router.replace(`/signin?next=${encodeURIComponent(next)}`);
       }
