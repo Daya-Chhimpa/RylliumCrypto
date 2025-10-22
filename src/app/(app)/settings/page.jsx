@@ -69,7 +69,7 @@ export default function SettingsPage() {
             <h3 style={{marginBottom:8}}>Step 2: Enable 2FA</h3>
             <form onSubmit={handleEnable}>
               <input className="auth-input" placeholder="6-digit code" value={code} onChange={(e)=>setCode(e.target.value)} required />
-              <button className="rl-btn rl-btn-primary" type="submit" disabled={!secret || status === "loading"} style={{marginTop:8}}>Enable</button>
+              <button className="rl-btn rl-btn-primary" type="submit" disabled={!secret || status === "loading"} style={{marginTop:8,marginLeft:7}}>Enable</button>
             </form>
           </div>
 
@@ -77,7 +77,7 @@ export default function SettingsPage() {
             <h3 style={{marginBottom:8}}>Disable 2FA</h3>
             <form onSubmit={handleDisable}>
               <input className="auth-input" placeholder="6-digit code" value={code} onChange={(e)=>setCode(e.target.value)} required />
-              <button className="rl-btn rl-btn-danger" type="submit" disabled={status === "loading"} style={{marginTop:8}}>Disable</button>
+              <button className="rl-btn rl-btn-danger" type="submit" disabled={status === "loading"} style={{marginTop:8,marginLeft:7}}>Disable</button>
             </form>
           </div>
         </div>
