@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "../../public/custom-style.css";
+import Providers from "@/store/Providers";
 // Root layout keeps only global providers and styles. Shells are applied per route group.
 
 const geistSans = Geist({
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

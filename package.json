@@ -10,9 +10,11 @@
     "export:build": "next build && node -e \"const fs=require('fs'); if(fs.existsSync('build')) fs.rmSync('build',{recursive:true,force:true}); if(!fs.existsSync('out')){console.error('Missing out/ - export failed'); process.exit(1);} fs.cpSync('out','build',{recursive:true}); console.log('Static site prepared in build/');\""
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.9.1",
     "next": "15.5.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-icons": "4.12.0"
+    "react-icons": "4.12.0",
+    "react-redux": "^9.2.0"
   }
 }

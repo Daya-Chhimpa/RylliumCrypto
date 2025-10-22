@@ -1,14 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { loginThunk } from "@/store/slices/authSlice";
 
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
+  const authStatus = useSelector((s) => s.auth.status);
+  const authError = useSelector((s) => s.auth.error);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    router.push("/dashboard");
+    const form = new FormData(e.currentTarget);
+    const payload = {
+      email: form.get("email"),
+      password: form.get("password"),
+      twoFactorCode: form.get("twoFactorCode") || "",
+    };
+    const res = await dispatch(loginThunk(payload));
+    if (res.meta.requestStatus === "fulfilled") {
+      const next = searchParams.get("next");
+      router.push(next || "/dashboard");
+    }
   }
   return (
     <>
@@ -19,12 +35,14 @@ export default function SignInPage() {
           <div className="auth-title">Sign in</div>
           <p className="auth-sub">Welcome back! Access your account to continue trading.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
-            <input className="auth-input" type="email" placeholder="Email" required />
-            <input className="auth-input" type="password" placeholder="Password" required />
+            <input name="email" className="auth-input" type="email" placeholder="Email" required />
+            <input name="password" className="auth-input" type="password" placeholder="Password" required />
             <button className="auth-btn" type="submit">Continue</button>
           </form>
+          {authStatus === "loading" && <p style={{marginTop:8}}>Signing in...</p>}
+          {authError && <p style={{marginTop:8,color:'red'}}>{authError}</p>}
           <div className="auth-alt">
-            <a href="/reset">Forgot password?</a>
+            <Link href="/forgot-password">Forgot password?</Link>
             <Link href="/signup">Create account</Link>
           </div>
         </div>
@@ -39,5 +57,6 @@ export default function SignInPage() {
     </>
   );
 }
+
 
 

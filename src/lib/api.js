@@ -1,0 +1,77 @@
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.pprince.io";
+
+const AUTH_TOKEN_KEY = "authToken";
+
+export function setAuthToken(token) {
+  try {
+    if (typeof window !== "undefined") {
+      if (token) {
+        window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+      } else {
+        window.localStorage.removeItem(AUTH_TOKEN_KEY);
+      }
+    }
+  } catch {}
+}
+
+export function getAuthToken() {
+  try {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem(AUTH_TOKEN_KEY) || "";
+    }
+  } catch {}
+  return "";
+}
+
+export function clearAuthToken() {
+  try {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(AUTH_TOKEN_KEY);
+      window.sessionStorage.removeItem(AUTH_TOKEN_KEY);
+    }
+  } catch {}
+}
+
+export async function apiRequest(path, options = {}) {
+  const url = `${BASE_URL}${path}`;
+  const headers = new Headers(options.headers || {});
+  if (!headers.has("Content-Type") && options.body) headers.set("Content-Type", "application/json");
+  // Attach Authorization header from stored token if available
+  try {
+    const token = getAuthToken();
+    if (token && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+  } catch {}
+  const init = {
+    method: options.method || "GET",
+    headers,
+    body: typeof options.body === "string" ? options.body : options.body ? JSON.stringify(options.body) : undefined,
+    credentials: "omit",
+    cache: "no-store",
+  };
+
+  const res = await fetch(url, init);
+  const text = await res.text();
+  let data;
+  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+  if (!res.ok) {
+    const message = (data && (data.message || data.error)) || `Request failed: ${res.status}`;
+    throw new Error(message);
+  }
+  return data;
+}
+
+export const endpoints = {
+  ticker: () => "/ticker",
+  register: () => "/auth/register",
+  confirmEmail: () => "/auth/confirm_email",
+  login: () => "/auth/login",
+  forgotPassword: () => "/auth/forgot-password",
+  forgotPassword2: () => "/auth/forgot-password2",
+  preEnable2fa: () => "/user/enable2fa", // GET
+  enable2fa: () => "/user/enable2fa",    // PUT
+  disable2fa: () => "/user/disable2fa",   // PUT
+};
+
+

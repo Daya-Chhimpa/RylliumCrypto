@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
 import { FaTachometerAlt, FaWallet, FaClipboardList, FaCog, FaSignOutAlt } from "react-icons/fa";
 
 const NAV_TOP = [
@@ -12,11 +14,17 @@ const NAV_TOP = [
 
 const NAV_BOTTOM = [
   { href: "/settings", label: "Settings", icon: FaCog },
-  { href: "/", label: "Log Out", icon: FaSignOutAlt },
 ];
 
 export default function Sidebar({ drawerOpen = false, onClose }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  function handleLogout() {
+    dispatch(logout());
+    router.push("/signin");
+  }
 
   return (
     <aside className={`rl-sidebar ${drawerOpen ? "open" : ""}`}>
@@ -59,6 +67,12 @@ export default function Sidebar({ drawerOpen = false, onClose }) {
             </Link>
           );
         })}
+        <button className="rl-nav-item" onClick={() => { onClose?.(); handleLogout(); }}>
+          <span className="rl-nav-icon" aria-hidden>
+            <FaSignOutAlt />
+          </span>
+          <span className="rl-nav-label">Log Out</span>
+        </button>
       </nav>
     </aside>
   );
