@@ -7,7 +7,11 @@ export function middleware(request) {
   const isAuth = request.cookies.get(AUTH_COOKIE)?.value === "1";
 
   const isAuthPage = pathname === "/signin" || pathname === "/signup" || pathname === "/forgot-password" || pathname.startsWith("/auth/");
-  const isAppRoute = pathname.startsWith("/dashboard") || pathname.startsWith("/orders") || pathname.startsWith("/wallets");
+  const isAppRoute =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/orders") ||
+    pathname.startsWith("/wallets") ||
+    pathname.startsWith("/settings");
 
   if (!isAuth && isAppRoute) {
     const url = request.nextUrl.clone();
@@ -34,6 +38,7 @@ export const config = {
     "/dashboard/:path*",
     "/orders/:path*",
     "/wallets/:path*",
+    "/settings/:path*",
   ],
 };
 

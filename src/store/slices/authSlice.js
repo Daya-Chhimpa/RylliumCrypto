@@ -62,6 +62,40 @@ export const resetPasswordThunk = createAsyncThunk(
   }
 );
 
+// 2FA
+export const preEnable2faThunk = createAsyncThunk(
+  "auth/preEnable2fa",
+  async (_payload, { rejectWithValue }) => {
+    try {
+      return await apiRequest(endpoints.preEnable2fa(), { method: "GET" });
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const enable2faThunk = createAsyncThunk(
+  "auth/enable2fa",
+  async (payload, { rejectWithValue }) => {
+    try {
+      return await apiRequest(endpoints.enable2fa(), { method: "PUT", body: payload });
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const disable2faThunk = createAsyncThunk(
+  "auth/disable2fa",
+  async (payload, { rejectWithValue }) => {
+    try {
+      return await apiRequest(endpoints.disable2fa(), { method: "PUT", body: payload });
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -107,7 +141,20 @@ const authSlice = createSlice({
 
       .addCase(resetPasswordThunk.pending, pending)
       .addCase(resetPasswordThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(resetPasswordThunk.rejected, rejected);
+      .addCase(resetPasswordThunk.rejected, rejected)
+
+      // 2FA
+      .addCase(preEnable2faThunk.pending, pending)
+      .addCase(preEnable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(preEnable2faThunk.rejected, rejected)
+
+      .addCase(enable2faThunk.pending, pending)
+      .addCase(enable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(enable2faThunk.rejected, rejected)
+
+      .addCase(disable2faThunk.pending, pending)
+      .addCase(disable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(disable2faThunk.rejected, rejected);
   },
 });
 
