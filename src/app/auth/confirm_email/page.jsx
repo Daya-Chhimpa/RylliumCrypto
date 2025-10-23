@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { confirmEmailThunk } from "@/store/slices/authSlice";
 
-export default function ConfirmEmailPage() {
+function ConfirmEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -41,6 +41,14 @@ export default function ConfirmEmailPage() {
       {done && <p>Confirmed! Redirecting to sign in...</p>}
       {error && <p style={{color:'red'}}>{error}</p>}
     </div>
+  );
+}
+
+export default function ConfirmEmailPage() {
+  return (
+    <Suspense fallback={<div style={{padding:24}}><h1>Email confirmation</h1><p>Loading...</p></div>}>
+      <ConfirmEmailContent />
+    </Suspense>
   );
 }
 

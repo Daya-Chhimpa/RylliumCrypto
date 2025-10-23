@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginThunk } from "@/store/slices/authSlice";
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -66,6 +67,14 @@ export default function SignInPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="auth-wrap"><div className="auth-side"><div className="auth-title">Sign in</div><p>Loading...</p></div></div>}>
+      <SignInContent />
+    </Suspense>
   );
 }
 

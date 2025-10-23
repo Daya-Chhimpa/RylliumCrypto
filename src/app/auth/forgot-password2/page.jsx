@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPasswordThunk } from "@/store/slices/authSlice";
 
-export default function ForgotPassword2Page() {
+function ForgotPassword2Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -46,6 +46,14 @@ export default function ForgotPassword2Page() {
         {error && <p style={{marginTop:8,color:'red'}}>{error}</p>}
       </div>
     </div>
+  );
+}
+
+export default function ForgotPassword2Page() {
+  return (
+    <Suspense fallback={<div className="auth-wrap"><div className="auth-side"><div className="auth-title">Set new password</div><p>Loading...</p></div></div>}>
+      <ForgotPassword2Content />
+    </Suspense>
   );
 }
 
