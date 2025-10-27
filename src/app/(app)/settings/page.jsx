@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { preEnable2faThunk, enable2faThunk, disable2faThunk } from "@/store/slices/authSlice";
+import { getAuthToken, getTokenPayload } from "@/lib/api";
 
 export default function SettingsPage() {
   const dispatch = useDispatch();
@@ -12,6 +13,26 @@ export default function SettingsPage() {
   const [secret, setSecret] = useState("");
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
+  const [twoFAEnabled, setTwoFAEnabled] = useState(null);
+
+  function refreshTwoFAState() {
+    try {
+      const payload = getTokenPayload();
+      console.log("Token payload:", payload);
+      const value = payload?.twoFAEnabled ?? payload?.two_fa_enabled ?? payload?.twoFactorEnabled;
+      setTwoFAEnabled(Boolean(value));
+    } catch {}
+  }
+
+  useEffect(() => {
+    refreshTwoFAState();
+    try {
+      const token = getAuthToken();
+      console.log("Auth token:", token);
+      const payload = getTokenPayload();
+      console.log("Token payload:", payload);
+    } catch {}
+  }, []);
 
   async function fetchQr() {
     setMessage("");
@@ -21,6 +42,14 @@ export default function SettingsPage() {
       setSecret(data.secret || "");
       setQr(data.uri || "");
     }
+    // Refresh token-derived state if backend rotated token (in some backends, preEnable does nothing to token, safe to refresh anyway)
+    refreshTwoFAState();
+    try {
+      const token = getAuthToken();
+      console.log("Auth token:", token);
+      const payload = getTokenPayload();
+      console.log("Token payload:", payload);
+    } catch {}
   }
 
   async function handleEnable(e) {
@@ -30,6 +59,13 @@ export default function SettingsPage() {
     if (res.meta.requestStatus === "fulfilled") {
       setMessage("Two-factor authentication enabled");
       setCode("");
+      refreshTwoFAState();
+      try {
+        const token = getAuthToken();
+        console.log("Auth token:", token);
+        const payload = getTokenPayload();
+        console.log("Token payload:", payload);
+      } catch {}
     }
   }
 
@@ -42,9 +78,16 @@ export default function SettingsPage() {
       setCode("");
       setQr("");
       setSecret("");
+      refreshTwoFAState();
+      try {
+        const token = getAuthToken();
+        console.log("Auth token:", token);
+        const payload = getTokenPayload();
+        console.log("Token payload:", payload);
+      } catch {}
     }
   }
-
+console.log("twoFAEnabled:", twoFAEnabled);
   return (
     <div className="rl-content">
       <h1 className="rl-page-title">Settings</h1>
@@ -53,33 +96,39 @@ export default function SettingsPage() {
         <p style={{marginBottom:12}}>Enhance your account security with an authenticator app.</p>
 
         <div className="settings-grid">
-          <div className="settings-card">
-            <h3 style={{marginBottom:8}}>Step 1: Get QR Code</h3>
-            <button className="rl-btn rl-btn-outline" onClick={fetchQr} disabled={status === "loading"}>Get QR</button>
-            {qr && (
-              <div style={{marginTop:12}}>
-                <p style={{marginBottom:8}}>Scan this with Google Authenticator/1Password/Authy:</p>
-                <img className="responsive-qr" src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qr)}`} alt="2FA QR" />
-                <p style={{marginTop:8, wordBreak:'break-all'}}><strong>Secret:</strong> {secret}</p>
+          {twoFAEnabled ? (
+            <>
+              <div className="settings-card">
+                <h3 style={{marginBottom:8}}>Disable 2FA</h3>
+                <form onSubmit={handleDisable}>
+                  <input className="auth-input" placeholder="6-digit code" value={code} onChange={(e)=>setCode(e.target.value)} required />
+                  <button className="rl-btn rl-btn-danger" type="submit" disabled={status === "loading"} style={{marginTop:8,marginLeft:7}}>Disable</button>
+                </form>
               </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <>
+              <div className="settings-card">
+                <h3 style={{marginBottom:8}}>Step 1: Get QR Code</h3>
+                <button className="rl-btn rl-btn-outline" onClick={fetchQr} disabled={status === "loading"}>Get QR</button>
+                {qr && (
+                  <div style={{marginTop:12}}>
+                    <p style={{marginBottom:8}}>Scan this with Google Authenticator/1Password/Authy:</p>
+                    <img className="responsive-qr" src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qr)}`} alt="2FA QR" />
+                    <p style={{marginTop:8, wordBreak:'break-all'}}><strong>Secret:</strong> {secret}</p>
+                  </div>
+                )}
+              </div>
 
-          <div className="settings-card">
-            <h3 style={{marginBottom:8}}>Step 2: Enable 2FA</h3>
-            <form onSubmit={handleEnable}>
-              <input className="auth-input" placeholder="6-digit code" value={code} onChange={(e)=>setCode(e.target.value)} required />
-              <button className="rl-btn rl-btn-primary" type="submit" disabled={!secret || status === "loading"} style={{marginTop:8,marginLeft:7}}>Enable</button>
-            </form>
-          </div>
-
-          <div className="settings-card">
-            <h3 style={{marginBottom:8}}>Disable 2FA</h3>
-            <form onSubmit={handleDisable}>
-              <input className="auth-input" placeholder="6-digit code" value={code} onChange={(e)=>setCode(e.target.value)} required />
-              <button className="rl-btn rl-btn-danger" type="submit" disabled={status === "loading"} style={{marginTop:8,marginLeft:7}}>Disable</button>
-            </form>
-          </div>
+              <div className="settings-card">
+                <h3 style={{marginBottom:8}}>Step 2: Enable 2FA</h3>
+                <form onSubmit={handleEnable}>
+                  <input className="auth-input" placeholder="6-digit code" value={code} onChange={(e)=>setCode(e.target.value)} required />
+                  <button className="rl-btn rl-btn-primary" type="submit" disabled={!secret || status === "loading"} style={{marginTop:8,marginLeft:7}}>Enable</button>
+                </form>
+              </div>
+            </>
+          )}
         </div>
 
         {status === "loading" && <p style={{marginTop:12}}>Working...</p>}

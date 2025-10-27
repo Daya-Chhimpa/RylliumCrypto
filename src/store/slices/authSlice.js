@@ -33,7 +33,12 @@ export const loginThunk = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
     try {
-      return await apiRequest(endpoints.login(), { method: "POST", body: payload });
+      const resp = await apiRequest(endpoints.login(), { method: "POST", body: payload });
+      const token = resp?.token || resp?.accessToken || resp?.data?.token;
+      if (resp?.requires2FA && !token) {
+        return rejectWithValue(resp?.message || "2FA code required");
+      }
+      return resp;
     } catch (e) {
       return rejectWithValue(e.message);
     }
@@ -125,11 +130,11 @@ const authSlice = createSlice({
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload?.user || { email: action.meta.arg?.email };
-        if (typeof document !== "undefined") {
-          document.cookie = `auth=1; path=/; max-age=${60 * 60 * 24 * 7}`;
-        }
         const token = action.payload?.token || action.payload?.accessToken || action.payload?.data?.token;
         if (token) {
+          if (typeof document !== "undefined") {
+            document.cookie = `auth=1; path=/; max-age=${60 * 60 * 24 * 7}`;
+          }
           setAuthToken(token);
         }
       })

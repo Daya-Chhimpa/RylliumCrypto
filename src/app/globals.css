@@ -204,7 +204,7 @@ a {
 }
 
 .rl-btn-primary {
-  padding-top: 8px;
+  padding-top: 1px;
   background: linear-gradient(90deg, var(--primary) 0%, var(--primary-2) 100%);
   color: #111;
 }

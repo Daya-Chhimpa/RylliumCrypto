@@ -74,4 +74,45 @@ export const endpoints = {
   disable2fa: () => "/user/disable2fa",   // PUT
 };
 
+// Safely decode a JWT payload without verifying signature (client-side display only)
+function safeBase64UrlToJson(base64Url) {
+  try {
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+    const jsonString = typeof atob === "function" ? atob(padded) : Buffer.from(padded, "base64").toString("binary");
+    // Convert binary string to UTF-8
+    const utf8 = decodeURIComponent(Array.prototype.map.call(jsonString, (c) =>
+      "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join(""));
+    return JSON.parse(utf8);
+  } catch {
+    try {
+      // Fallback: try direct JSON parse (in case payload is already plain text)
+      return JSON.parse(base64Url);
+    } catch {
+      return null;
+    }
+  }
+}
+
+export function decodeJwtPayload(token) {
+  try {
+    if (!token) return null;
+    const parts = token.split(".");
+    if (parts.length < 2) return null;
+    return safeBase64UrlToJson(parts[1]);
+  } catch {
+    return null;
+  }
+}
+
+export function getTokenPayload() {
+  try {
+    const token = getAuthToken();
+    return decodeJwtPayload(token);
+  } catch {
+    return null;
+  }
+}
+
 
