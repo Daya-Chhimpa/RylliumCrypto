@@ -30,6 +30,7 @@ export const toastMiddleware = (store) => (next) => (action) => {
       "auth/preEnable2fa": "Scan the QR with your authenticator app",
       "auth/enable2fa": "Two-factor authentication enabled",
       "auth/disable2fa": "Two-factor authentication disabled",
+      "auth/twoFAStatus": "2FA status fetched",
     };
 
     let description;

@@ -72,6 +72,7 @@ export const endpoints = {
   preEnable2fa: () => "/user/enable2fa", // GET
   enable2fa: () => "/user/enable2fa",    // PUT
   disable2fa: () => "/user/disable2fa",   // PUT
+  twoFAStatus: () => "/user/twoFAStatus", // GET -> { is2FaEnabled: 1|0 }
 };
 
 // Safely decode a JWT payload without verifying signature (client-side display only)

@@ -101,6 +101,18 @@ export const disable2faThunk = createAsyncThunk(
   }
 );
 
+// Fetch 2FA status
+export const twoFAStatusThunk = createAsyncThunk(
+  "auth/twoFAStatus",
+  async (_payload, { rejectWithValue }) => {
+    try {
+      return await apiRequest(endpoints.twoFAStatus(), { method: "GET" });
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -159,7 +171,12 @@ const authSlice = createSlice({
 
       .addCase(disable2faThunk.pending, pending)
       .addCase(disable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(disable2faThunk.rejected, rejected);
+      .addCase(disable2faThunk.rejected, rejected)
+
+      // twoFA status
+      .addCase(twoFAStatusThunk.pending, pending)
+      .addCase(twoFAStatusThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(twoFAStatusThunk.rejected, rejected);
   },
 });
 
