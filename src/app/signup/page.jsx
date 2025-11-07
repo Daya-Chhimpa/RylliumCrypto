@@ -37,7 +37,7 @@ function SignUpContent() {
           <div className="auth-title">Create your account</div>
           <p className="auth-sub">Join millions of traders on Ryllium. It only takes a minute.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
-            <div style={{display:'flex', gap:8}}>
+            <div className="name-row" style={{display:'flex', gap:8}}>
               <input name="firstName" className="auth-input" type="text" placeholder="First name" required />
               <input name="lastName" className="auth-input" type="text" placeholder="Last name" required />
             </div>

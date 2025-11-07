@@ -114,7 +114,7 @@ footer .hero-content{display:flex;flex-direction:column;align-items:center;text-
 .auth-title{font-size:28px;font-weight:800;margin:8px 0}
 .auth-sub{color:#6a6d75;margin-bottom:20px}
 .auth-form{display:grid;gap:12px}
-.auth-input{height:44px;border:1px solid #ecebed;border-radius:10px;padding:0 14px}
+.auth-input{height:44px;border:1px solid #ecebed;border-radius:10px;padding:0 14px;width:100%}
 .auth-btn{height:46px;border-radius:10px;border:0;font-weight:700;background:linear-gradient(90deg,rgba(238,44,43,1) 0%, rgba(255,189,1,1) 100%);color:#111;cursor:pointer}
 .auth-alt{display:flex;justify-content:space-between;margin-top:10px;font-size:14px}
 .auth-hero{background:radial-gradient(circle at 30% -20%, rgba(255,189,1,0.22) 0%, rgba(238,44,43,0.18) 28%, transparent 60%), #fff8f7;display:flex;align-items:center;justify-content:center;padding:40px}
@@ -122,6 +122,17 @@ footer .hero-content{display:flex;flex-direction:column;align-items:center;text-
 .auth-hero h2{font-size:36px;margin:10px 0}
 .auth-hero p{color:#4c4f55}
 @media (max-width:900px){.auth-wrap{grid-template-columns:1fr}}
+
+/* Ensure first/last name sit nicely side-by-side and stay responsive */
+.auth-form .name-row .auth-input{flex:1}
+
+/* Mobile refinements to match compact design */
+@media (max-width:480px){
+  .auth-side{padding:20px}
+  .auth-title{font-size:24px}
+  .auth-hero{padding:20px}
+  .auth-btn{height:44px}
+}
 
 /* Landing navbar responsiveness */
 @media (max-width:992px){
