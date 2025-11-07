@@ -22,7 +22,8 @@
 html,
 body {
   max-width: 100vw;
-  overflow: hidden; /* prevent double scroll; main area will scroll */
+  overflow-x: hidden; /* avoid horizontal scroll */
+  overflow-y: auto;   /* allow vertical scroll on auth and small screens */
 }
 
 body {
@@ -175,8 +176,10 @@ a {
   padding: 14px 16px;
   border-bottom: 1px solid #f1f1f3;
   background: #ffffffd9;
-  position: sticky;
+  position: fixed; /* keep visible while scrolling on mobile */
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 30;
   backdrop-filter: blur(6px);
 }
@@ -328,4 +331,7 @@ a {
   .rl-input-group {
     grid-template-columns: 1fr auto;
   }
+
+  /* offset content for fixed mobile bar */
+  .rl-main { padding-top: 62px; }
 }
