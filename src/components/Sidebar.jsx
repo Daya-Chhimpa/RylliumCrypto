@@ -29,8 +29,8 @@ export default function Sidebar({ drawerOpen = false, onClose }) {
   return (
     <aside className={`rl-sidebar ${drawerOpen ? "open" : ""}`}>
       <div className="rl-brand">
-        <div className="rl-logo">R</div>
-        <span className="rl-brand-text">Ryllium</span>
+        <img src="/NB.png" alt="NB" className="rl-logo-img" />
+        <span className="rl-brand-text">NB Crypto</span>
       </div>
       <nav className="rl-nav">
         {NAV_TOP.map(({ href, label, icon: Icon }) => {

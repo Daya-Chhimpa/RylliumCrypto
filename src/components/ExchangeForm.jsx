@@ -36,58 +36,80 @@ export default function ExchangeForm() {
 
   return (
     <section className="rl-exchange">
-      <div className="rl-row">
-        <div className="rl-col">
-          <label className="rl-label">FIAT:</label>
-          <div className="rl-input-group">
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              className="rl-input"
-              value={fiatAmount}
-              onChange={(e) => setFiatAmount(e.target.value)}
-              placeholder="0.00"
-            />
-            <select
-              className="rl-select"
-              value={fiat}
-              onChange={(e) => setFiat(e.target.value)}
-            >
-              {FIAT_OPTIONS.map((f) => (
-                <option key={f}>{f}</option>
-              ))}
-            </select>
+      <div style={{
+        background: '#fff',
+        borderRadius: '20px',
+        padding: '32px',
+        border: '1px solid rgba(76, 64, 247, 0.1)',
+        boxShadow: '0 10px 40px rgba(76, 64, 247, 0.08)'
+      }}>
+        <div className="rl-row">
+          <div className="rl-col">
+            <label className="rl-label">FIAT:</label>
+            <div className="rl-input-group">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                className="rl-input"
+                value={fiatAmount}
+                onChange={(e) => setFiatAmount(e.target.value)}
+                placeholder="0.00"
+              />
+              <select
+                className="rl-select"
+                value={fiat}
+                onChange={(e) => setFiat(e.target.value)}
+              >
+                {FIAT_OPTIONS.map((f) => (
+                  <option key={f}>{f}</option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="rl-arrow" aria-hidden>
-          →
-        </div>
-        <div className="rl-col">
-          <label className="rl-label">CRYPTO:</label>
-          <div className="rl-input-group">
-            <input
-              type="number"
-              className="rl-input"
-              value={cryptoAmount.toFixed(8)}
-              readOnly
-            />
-            <select
-              className="rl-select"
-              value={crypto}
-              onChange={(e) => setCrypto(e.target.value)}
-            >
-              {CRYPTO_OPTIONS.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
+          <div className="rl-arrow" aria-hidden>
+            →
           </div>
+          <div className="rl-col">
+            <label className="rl-label">CRYPTO:</label>
+            <div className="rl-input-group">
+              <input
+                type="number"
+                className="rl-input"
+                value={cryptoAmount.toFixed(8)}
+                readOnly
+              />
+              <select
+                className="rl-select"
+                value={crypto}
+                onChange={(e) => setCrypto(e.target.value)}
+              >
+                {CRYPTO_OPTIONS.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button className="rl-btn rl-btn-primary rl-buy" style={{
+            height: '52px',
+            padding: '0 32px',
+            borderRadius: '12px',
+            fontWeight: 700,
+            fontSize: '15px',
+            boxShadow: '0 8px 24px rgba(76, 64, 247, 0.3)',
+            border: 'none'
+          }}>Buy Crypto</button>
         </div>
-        <button className="rl-btn rl-btn-dark rl-buy">Buy crypto</button>
+        <p className="rl-rate" style={{
+          marginTop: 20,
+          padding: '16px',
+          background: 'rgba(76, 64, 247, 0.05)',
+          borderRadius: '12px',
+          fontWeight: 600
+        }}>
+          Exchange Rate: 1 {crypto} ≈ {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiat}
+        </p>
       </div>
-      <p className="rl-rate">
-        Exchange Rate: 1 {crypto} ≈ {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiat}
-      </p>
     </section>
   );
 }

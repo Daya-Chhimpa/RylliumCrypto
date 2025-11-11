@@ -2,58 +2,46 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginThunk } from "@/store/slices/authSlice";
+import { Suspense, useState } from "react";
 
 function SignInContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const dispatch = useDispatch();
-  const authStatus = useSelector((s) => s.auth.status);
-  const authError = useSelector((s) => s.auth.error);
-
-  // If token exists, redirect away from sign-in
-  if (typeof window !== "undefined") {
-    const token = window.localStorage.getItem("authToken");
-    const hasAuthCookie = document.cookie.split("; ").some((c) => c.startsWith("auth=1"));
-    if (token && hasAuthCookie) {
-      const next = searchParams.get("next");
-      if (next) router.replace(next);
-      else router.replace("/dashboard");
-    }
-  }
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const payload = {
-      email: form.get("email"),
-      password: form.get("password"),
-      twoFactorCode: form.get("twoFactorCode") || "",
-    };
-    const res = await dispatch(loginThunk(payload));
-    if (res.meta.requestStatus === "fulfilled") {
-      const next = searchParams.get("next");
-      router.push(next || "/dashboard");
-    }
+    setIsLoading(true);
+    
+    // Simulate login - just for UI demo
+    setTimeout(() => {
+      // Store demo token
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("authToken", "demo-token");
+        document.cookie = `auth=1; path=/; max-age=${60 * 60 * 24 * 7}`;
+      }
+      router.push("/dashboard");
+    }, 1000);
   }
+  
   return (
     <>
       <link rel="stylesheet" href="/custom-style.css" />
       <div className="auth-wrap">
         <div className="auth-side">
-          <div className="auth-brand"><span className="logo">R</span><div className="Tag">Ryllium</div></div>
+          <div className="auth-brand">
+            <img src="/NB.png" alt="NB" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
+            <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+          </div>
           <div className="auth-title">Sign in</div>
           <p className="auth-sub">Welcome back! Access your account to continue trading.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
             <input name="email" className="auth-input" type="email" placeholder="Email" required />
             <input name="password" className="auth-input" type="password" placeholder="Password" required />
             <input name="twoFactorCode" className="auth-input" type="text" placeholder="Two-factor code (optional)" inputMode="numeric" pattern="[0-9]*" />
-            <button className="auth-btn" type="submit">Continue</button>
+            <button className="auth-btn" type="submit" disabled={isLoading}>
+{isLoading ? "Signing in..." : "Continue"}
+            </button>
           </form>
-          {authStatus === "loading" && <p style={{marginTop:8}}>Signing in...</p>}
-          {authError && <p style={{marginTop:8,color:'red'}}>{authError}</p>}
           <div className="auth-alt">
             <Link href="/forgot-password">Forgot password?</Link>
             <Link href="/signup">Create account</Link>
@@ -61,9 +49,13 @@ function SignInContent() {
         </div>
         <div className="auth-hero">
           <div className="auth-hero-inner">
-            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">R</span><div className="Tag">Ryllium</div></div>
-            <h2>Trade smarter with Ryllium</h2>
-            <p>Bank-grade security, lightning-fast execution, and powerful analytics in one modern platform.</p>
+            <img src="/crypto.png" alt="Crypto Trading" className="auth-crypto-img" />
+            <div className="auth-brand" style={{justifyContent:'center', marginTop: '16px'}}>
+              <img src="/NB.png" alt="NB" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
+              <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+            </div>
+            <h2>Trade smarter with NB Crypto</h2>
+            <p>Bank-grade security, lightning-fast execution, and powerful analytics.</p>
           </div>
         </div>
       </div>

@@ -8,14 +8,14 @@ export default function Hero() {
       <div className="hero-inner">
         <p className="hero-kicker">Next‑Gen Crypto Platform</p>
         <h1 className="hero-title">
-          Welcome to <span>Ryllium</span>
+          Welcome to <span>NB Crypto</span>
         </h1>
         <p className="hero-sub">
           The most advanced cryptocurrency trading platform designed for the future. Trade, invest, and grow your portfolio with cutting‑edge technology and unparalleled security.
         </p>
         <div className="hero-actions">
           <a className="rl-btn rl-btn-outline-accent" href="#exchange">Start Trading</a>
-          <a className="rl-btn rl-btn-primary" href="#learn">Learn More</a>
+          <button className="rl-btn rl-btn-primary" style={{padding: '12px 28px', height: 'auto'}}>Learn More</button>
         </div>
 
         <div className="feature-grid">
