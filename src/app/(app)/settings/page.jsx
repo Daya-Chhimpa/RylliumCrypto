@@ -1,55 +1,113 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { preEnable2faThunk, enable2faThunk, disable2faThunk, twoFAStatusThunk } from "@/store/slices/authSlice";
 
 export default function SettingsPage() {
+  const dispatch = useDispatch();
+  const authStatus = useSelector((s) => s.auth.status);
+  const authError = useSelector((s) => s.auth.error);
+  
   const [qr, setQr] = useState("");
   const [secret, setSecret] = useState("");
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+
+  // Check 2FA status on page load
+  useEffect(() => {
+    const checkStatus = async () => {
+      setIsCheckingStatus(true);
+      try {
+        const res = await dispatch(twoFAStatusThunk());
+        if (res.meta.requestStatus === "fulfilled") {
+          const enabled = res.payload?.is2FaEnabled === 1 || res.payload?.is2FaEnabled === true;
+          setTwoFAEnabled(enabled);
+        }
+      } catch (error) {
+        console.error("Error checking 2FA status:", error);
+      } finally {
+        setIsCheckingStatus(false);
+      }
+    };
+    checkStatus();
+  }, [dispatch]);
 
   async function fetchQr() {
     setMessage("");
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      const demoSecret = "DEMO" + Math.random().toString(36).substring(7).toUpperCase();
-      setSecret(demoSecret);
-      setQr(`otpauth://totp/NBCrypto:demo@example.com?secret=${demoSecret}&issuer=NBCrypto`);
-      setIsLoading(false);
-    }, 800);
+    setErrorMsg("");
+    try {
+      const res = await dispatch(preEnable2faThunk());
+      if (res.meta.requestStatus === "fulfilled") {
+        const data = res.payload;
+        // API returns qrCodeUrl and secret
+        setQr(data?.qrCodeUrl || "");
+        setSecret(data?.secret || "");
+        setMessage("QR code generated successfully! Scan it with your authenticator app.");
+      } else {
+        setErrorMsg(res.payload || "Failed to generate QR code");
+      }
+    } catch (error) {
+      setErrorMsg("Failed to generate QR code. Please try again.");
+    }
   }
 
   async function handleEnable(e) {
     e.preventDefault();
     setMessage("");
-    setIsLoading(true);
+    setErrorMsg("");
     
-    // Simulate API call
-    setTimeout(() => {
-      setMessage("Two-factor authentication enabled successfully!");
-      setCode("");
-      setTwoFAEnabled(true);
-      setIsLoading(false);
-    }, 1000);
+    if (!code || code.length !== 6) {
+      setErrorMsg("Please enter a valid 6-digit code");
+      return;
+    }
+
+    try {
+      const res = await dispatch(enable2faThunk({ twoFactorCode: code }));
+      if (res.meta.requestStatus === "fulfilled") {
+        setMessage("Two-factor authentication enabled successfully!");
+        setCode("");
+        setTwoFAEnabled(true);
+        // Clear QR after successful enable
+        setTimeout(() => {
+          setQr("");
+          setSecret("");
+        }, 2000);
+      } else {
+        setErrorMsg(res.payload || "Failed to enable 2FA. Please check your code.");
+      }
+    } catch (error) {
+      setErrorMsg("Failed to enable 2FA. Please try again.");
+    }
   }
 
   async function handleDisable(e) {
     e.preventDefault();
     setMessage("");
-    setIsLoading(true);
+    setErrorMsg("");
     
-    // Simulate API call
-    setTimeout(() => {
-      setMessage("Two-factor authentication disabled successfully.");
-      setCode("");
-      setQr("");
-      setSecret("");
-      setTwoFAEnabled(false);
-      setIsLoading(false);
-    }, 1000);
+    if (!code || code.length !== 6) {
+      setErrorMsg("Please enter a valid 6-digit code");
+      return;
+    }
+
+    try {
+      const res = await dispatch(disable2faThunk({ twoFactorCode: code }));
+      if (res.meta.requestStatus === "fulfilled") {
+        setMessage("Two-factor authentication disabled successfully.");
+        setCode("");
+        setQr("");
+        setSecret("");
+        setTwoFAEnabled(false);
+      } else {
+        setErrorMsg(res.payload || "Failed to disable 2FA. Please check your code.");
+      }
+    } catch (error) {
+      setErrorMsg("Failed to disable 2FA. Please try again.");
+    }
   }
 
   return (
@@ -75,10 +133,16 @@ export default function SettingsPage() {
             borderRadius: '6px',
             fontSize: '14px',
             fontWeight: 600,
-            background: twoFAEnabled ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+            background: isCheckingStatus 
+              ? 'linear-gradient(135deg, #6366f1 0%, #4c40f7 100%)' 
+              : twoFAEnabled 
+                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+                : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
             color: '#fff',
             display: 'inline-block'
-          }}>{twoFAEnabled ? "Enabled" : "Disabled"}</span>
+          }}>
+            {isCheckingStatus ? "Checking..." : twoFAEnabled ? "Enabled" : "Disabled"}
+          </span>
         </p>
 
         <div className="settings-grid">
@@ -87,8 +151,8 @@ export default function SettingsPage() {
             <p style={{marginBottom: 16, color: 'var(--muted)', fontSize: 14}}>
               Scan the QR code with your authenticator app to set up 2FA.
             </p>
-            <button className="rl-btn rl-btn-outline" onClick={fetchQr} disabled={isLoading}>
-              {isLoading ? "Loading..." : "Generate QR"}
+            <button className="rl-btn rl-btn-outline" onClick={fetchQr} disabled={authStatus === "loading"}>
+              {authStatus === "loading" ? "Generating..." : "Generate QR"}
             </button>
             {qr && (
               <div style={{marginTop: 20, padding: 20, background: 'rgba(76, 64, 247, 0.03)', borderRadius: 12}}>
@@ -96,14 +160,16 @@ export default function SettingsPage() {
                 <div style={{background: '#fff', padding: 16, borderRadius: 12, display: 'inline-block'}}>
                   <img 
                     className="responsive-qr" 
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qr)}`} 
+                    src={qr}
                     alt="2FA QR" 
-                    style={{display: 'block'}}
+                    style={{display: 'block', width: 200, height: 200}}
                   />
                 </div>
-                <p style={{marginTop: 16, wordBreak: 'break-all', fontSize: 13, background: '#fff', padding: 12, borderRadius: 8}}>
-                  <strong>Secret Key:</strong> {secret}
-                </p>
+                {secret && (
+                  <p style={{marginTop: 16, wordBreak: 'break-all', fontSize: 13, background: '#fff', padding: 12, borderRadius: 8}}>
+                    <strong>Secret Key:</strong> {secret}
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -128,14 +194,14 @@ export default function SettingsPage() {
                 <button 
                   className="rl-btn" 
                   type="submit" 
-                  disabled={isLoading} 
+                  disabled={authStatus === "loading"} 
                   style={{
                     width: '100%',
                     background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                     color: '#fff',
                     fontWeight: 700
                   }}>
-                  {isLoading ? "Disabling..." : "Disable 2FA"}
+                  {authStatus === "loading" ? "Disabling..." : "Disable 2FA"}
                 </button>
               </form>
             </div>
@@ -159,9 +225,9 @@ export default function SettingsPage() {
                 <button 
                   className="rl-btn rl-btn-primary" 
                   type="submit" 
-                  disabled={!secret || isLoading} 
+                  disabled={!secret || authStatus === "loading"} 
                   style={{width: '100%'}}>
-                  {isLoading ? "Enabling..." : "Enable 2FA"}
+                  {authStatus === "loading" ? "Enabling..." : "Enable 2FA"}
                 </button>
               </form>
             </div>
@@ -173,10 +239,23 @@ export default function SettingsPage() {
             marginTop: 20, 
             padding: 16, 
             borderRadius: 12,
-            background: message.includes('disabled') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-            color: message.includes('disabled') ? '#dc2626' : '#059669',
-            fontWeight: 600
+            background: 'rgba(16, 185, 129, 0.1)',
+            color: '#059669',
+            fontWeight: 600,
+            border: '1px solid rgba(16, 185, 129, 0.2)'
           }}>{message}</p>
+        )}
+        
+        {errorMsg && (
+          <p style={{
+            marginTop: 20, 
+            padding: 16, 
+            borderRadius: 12,
+            background: 'rgba(239, 68, 68, 0.1)',
+            color: '#dc2626',
+            fontWeight: 600,
+            border: '1px solid rgba(239, 68, 68, 0.2)'
+          }}>{errorMsg}</p>
         )}
         
         <style jsx>{`

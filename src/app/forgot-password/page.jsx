@@ -2,25 +2,29 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPasswordThunk } from "@/store/slices/authSlice";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
+  const status = useSelector((s) => s.auth.status);
+  const error = useSelector((s) => s.auth.error);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
-    setMessage("");
+    const form = new FormData(e.currentTarget);
+    const email = form.get("email");
     
-    // Simulate API call
-    setTimeout(() => {
-      setMessage("Password reset link sent to your email!");
-      setTimeout(() => {
-        router.push("/signin");
-      }, 2000);
-    }, 1000);
+    console.log("📤 Submitting forgot password for email:", email);
+    const res = await dispatch(forgotPasswordThunk({ email }));
+    console.log("📥 Forgot password response:", res);
+    
+    if (res.meta.requestStatus === "fulfilled") {
+      // Show success message and redirect
+      alert("Password reset link sent! Check your email.");
+      router.push("/signin");
+    }
   }
 
   return (
@@ -36,11 +40,11 @@ export default function ForgotPasswordPage() {
           <p className="auth-sub">Enter your email and we'll send you a reset link.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
             <input name="email" className="auth-input" type="email" placeholder="Email" required />
-            <button className="auth-btn" type="submit" disabled={isLoading}>
-              {isLoading ? "Sending..." : "Send reset link"}
+            <button className="auth-btn" type="submit" disabled={status === "loading"}>
+              {status === "loading" ? "Sending..." : "Send reset link"}
             </button>
           </form>
-          {message && <p style={{marginTop: 10, color: '#059669', fontWeight: 600, fontSize: '13px'}}>{message}</p>}
+          {error && <p style={{marginTop:12,color:'#ef4444',fontWeight:600,fontSize:'14px'}}>{error}</p>}
           <div className="auth-alt">
             <Link href="/signin">Back to sign in</Link>
             <Link href="/signup">Create account</Link>
@@ -49,18 +53,15 @@ export default function ForgotPasswordPage() {
         <div className="auth-hero">
           <div className="auth-hero-inner">
             <img src="/crypto.png" alt="Crypto Security" className="auth-crypto-img" />
-            <div className="auth-brand" style={{justifyContent:'center', marginTop: '24px'}}>
-              <img src="/NB.png" alt="NB" style={{width: '48px', height: '48px', borderRadius: '12px'}} />
-              <div className="Tag">NB Crypto</div>
+            <div className="auth-brand" style={{justifyContent:'center', marginTop: '16px'}}>
+              <img src="/NB.png" alt="NB" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
+              <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
             </div>
             <h2>Security first</h2>
-            <p>We keep your account protected with best-in-class security measures and encryption.</p>
+            <p>We keep your account protected with best-in-class security.</p>
           </div>
         </div>
       </div>
     </>
   );
 }
-
-
-

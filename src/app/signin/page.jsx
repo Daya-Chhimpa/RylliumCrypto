@@ -2,27 +2,47 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginThunk } from "@/store/slices/authSlice";
 
 function SignInContent() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
+  const authStatus = useSelector((s) => s.auth.status);
+  const authError = useSelector((s) => s.auth.error);
+
+  // If token exists, redirect away from sign-in
+  if (typeof window !== "undefined") {
+    const token = window.localStorage.getItem("authToken");
+    const hasAuthCookie = document.cookie.split("; ").some((c) => c.startsWith("auth=1"));
+    if (token && hasAuthCookie) {
+      const next = searchParams.get("next");
+      if (next) router.replace(next);
+      else router.replace("/dashboard");
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
+    const form = new FormData(e.currentTarget);
+    const payload = {
+      email: form.get("email"),
+      password: form.get("password"),
+      twoFactorCode: form.get("twoFactorCode") || "",
+    };
     
-    // Simulate login - just for UI demo
-    setTimeout(() => {
-      // Store demo token
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("authToken", "demo-token");
-        document.cookie = `auth=1; path=/; max-age=${60 * 60 * 24 * 7}`;
-      }
-      router.push("/dashboard");
-    }, 1000);
+    console.log("📤 Submitting login with payload:", payload);
+    const res = await dispatch(loginThunk(payload));
+    console.log("📥 Login response:", res);
+    
+    if (res.meta.requestStatus === "fulfilled") {
+      const next = searchParams.get("next");
+      router.push(next || "/dashboard");
+    }
   }
-  
+
   return (
     <>
       <link rel="stylesheet" href="/custom-style.css" />
@@ -38,10 +58,11 @@ function SignInContent() {
             <input name="email" className="auth-input" type="email" placeholder="Email" required />
             <input name="password" className="auth-input" type="password" placeholder="Password" required />
             <input name="twoFactorCode" className="auth-input" type="text" placeholder="Two-factor code (optional)" inputMode="numeric" pattern="[0-9]*" />
-            <button className="auth-btn" type="submit" disabled={isLoading}>
-{isLoading ? "Signing in..." : "Continue"}
+            <button className="auth-btn" type="submit" disabled={authStatus === "loading"}>
+              {authStatus === "loading" ? "Signing in..." : "Continue"}
             </button>
           </form>
+          {authError && <p style={{marginTop:12,color:'#ef4444',fontWeight:600,fontSize:'14px'}}>{authError}</p>}
           <div className="auth-alt">
             <Link href="/forgot-password">Forgot password?</Link>
             <Link href="/signup">Create account</Link>
@@ -70,6 +91,3 @@ export default function SignInPage() {
     </Suspense>
   );
 }
-
-
-

@@ -2,10 +2,13 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { confirmEmailThunk } from "@/store/slices/authSlice";
 
 function ConfirmEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -15,14 +18,27 @@ function ConfirmEmailContent() {
     const token = searchParams.get("token");
     if (!token) return;
     
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setDone(true);
+    // Call API to confirm email
+    async function confirmEmail() {
+      setIsLoading(true);
+      setError("");
+      
+      console.log("📤 Confirming email with token:", token);
+      const res = await dispatch(confirmEmailThunk({ token }));
+      console.log("📥 Confirm email response:", res);
+      
       setIsLoading(false);
-      setTimeout(() => router.push("/signin"), 1500);
-    }, 1000);
-  }, [router, searchParams]);
+      
+      if (res.meta.requestStatus === "fulfilled") {
+        setDone(true);
+        setTimeout(() => router.push("/signin"), 2000);
+      } else {
+        setError(res.payload || "Email confirmation failed. Please try again.");
+      }
+    }
+    
+    confirmEmail();
+  }, [router, searchParams, dispatch]);
 
   return (
     <div style={{
@@ -121,5 +137,3 @@ export default function ConfirmEmailPage() {
     </Suspense>
   );
 }
-
-

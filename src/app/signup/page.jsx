@@ -1,25 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { registerThunk } from "@/store/slices/authSlice";
 
 function SignUpContent() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
+  const authStatus = useSelector((s) => s.auth.status);
+  const authError = useSelector((s) => s.auth.error);
 
   async function handleSubmit(e){
     e.preventDefault();
-    setIsLoading(true);
+    const form = new FormData(e.currentTarget);
+    const payload = {
+      firstName: form.get("firstName"),
+      lastName: form.get("lastName"),
+      email: form.get("email"),
+      password: form.get("password"),
+    };
     
-    // Simulate registration - just for UI demo
-    setTimeout(() => {
-      const form = new FormData(e.currentTarget);
-      const email = form.get("email");
-      router.push(`/auth/confirm_email${email ? `?email=${encodeURIComponent(email)}` : ""}`);
-    }, 1000);
+    console.log("📤 Submitting signup with payload:", payload);
+    const res = await dispatch(registerThunk(payload));
+    console.log("📥 Signup response:", res);
+    
+    if (res.meta.requestStatus === "fulfilled") {
+      // Redirect to confirmation instructions page
+      const email = encodeURIComponent(payload.email || "");
+      router.push(`/auth/confirm_email${email ? `?email=${email}` : ""}`);
+    }
   }
-  
+
   return (
     <>
       <link rel="stylesheet" href="/custom-style.css" />
@@ -38,10 +52,11 @@ function SignUpContent() {
             </div>
             <input name="email" className="auth-input" type="email" placeholder="Email" required />
             <input name="password" className="auth-input" type="password" placeholder="Password" required />
-            <button className="auth-btn" type="submit" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Create account"}
+            <button className="auth-btn" type="submit" disabled={authStatus === "loading"}>
+              {authStatus === "loading" ? "Creating account..." : "Create account"}
             </button>
           </form>
+          {authError && <p style={{marginTop:12,color:'#ef4444',fontWeight:600,fontSize:'14px'}}>{authError}</p>}
           <div className="auth-alt">
             <span>Already have an account?</span>
             <Link href="/signin">Sign in</Link>
@@ -70,6 +85,3 @@ export default function SignUpPage() {
     </Suspense>
   );
 }
-
-
-
