@@ -83,7 +83,7 @@ export default function ExchangeForm() {
             </select>
           </div>
         </div>
-        <button className="rl-btn rl-btn-dark rl-buy">Buy crypto</button>
+        <button className="rl-btn rl-btn-primary rl-buy">Buy crypto</button>
       </div>
       <p className="rl-rate">
         Exchange Rate: 1 {crypto} ≈ {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiat}

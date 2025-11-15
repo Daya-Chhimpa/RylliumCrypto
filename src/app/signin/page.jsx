@@ -43,7 +43,7 @@ function SignInContent() {
       <link rel="stylesheet" href="/custom-style.css" />
       <div className="auth-wrap">
         <div className="auth-side">
-          <div className="auth-brand"><span className="logo">R</span><div className="Tag">Ryllium</div></div>
+          <div className="auth-brand"><span className="logo">A</span><div className="Tag">Alpacross</div></div>
           <div className="auth-title">Sign in</div>
           <p className="auth-sub">Welcome back! Access your account to continue trading.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
@@ -61,8 +61,8 @@ function SignInContent() {
         </div>
         <div className="auth-hero">
           <div className="auth-hero-inner">
-            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">R</span><div className="Tag">Ryllium</div></div>
-            <h2>Trade smarter with Ryllium</h2>
+            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">A</span><div className="Tag">Alpacross</div></div>
+            <h2>Trade smarter with Alpacross</h2>
             <p>Bank-grade security, lightning-fast execution, and powerful analytics in one modern platform.</p>
           </div>
         </div>

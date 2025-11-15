@@ -27,26 +27,49 @@ function ConfirmEmailContent() {
   }, [dispatch, router, searchParams]);
 
   return (
-    <div style={{padding:24}}>
-      <h1>Email confirmation</h1>
-      {!searchParams.get("token") && (
-        <>
-          <p>
-            We have sent a confirmation link to {email ? <b>{email}</b> : "your email"}. Please open the link from your inbox to activate your account.
-          </p>
-          <p>If you don’t see the email, check your spam folder.</p>
-        </>
-      )}
-      {status === "loading" && <p>Confirming...</p>}
-      {done && <p>Confirmed! Redirecting to sign in...</p>}
-      {error && <p style={{color:'red'}}>{error}</p>}
-    </div>
+    <>
+      <link rel="stylesheet" href="/custom-style.css" />
+      <div className="auth-wrap">
+        <div className="auth-side">
+          <div className="auth-brand"><span className="logo">A</span><div className="Tag">Alpacross</div></div>
+          <div className="auth-title">Email confirmation</div>
+          {!searchParams.get("token") && (
+            <>
+              <p className="auth-sub">
+                We have sent a confirmation link to {email ? <b>{email}</b> : "your email"}. Please open the link from your inbox to activate your account.
+              </p>
+              <p className="auth-sub">If you don't see the email, check your spam folder.</p>
+            </>
+          )}
+          {status === "loading" && <p style={{marginTop:8}}>Confirming...</p>}
+          {done && <p style={{marginTop:8,color:'#10b981'}}>Confirmed! Redirecting to sign in...</p>}
+          {error && <p style={{marginTop:8,color:'#ef4444'}}>{error}</p>}
+        </div>
+        <div className="auth-hero">
+          <div className="auth-hero-inner">
+            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">A</span><div className="Tag">Alpacross</div></div>
+            <h2>Welcome aboard!</h2>
+            <p>Just one more step to activate your account and start trading.</p>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
 export default function ConfirmEmailPage() {
   return (
-    <Suspense fallback={<div style={{padding:24}}><h1>Email confirmation</h1><p>Loading...</p></div>}>
+    <Suspense fallback={
+      <>
+        <link rel="stylesheet" href="/custom-style.css" />
+        <div className="auth-wrap">
+          <div className="auth-side">
+            <div className="auth-title">Email confirmation</div>
+            <p>Loading...</p>
+          </div>
+        </div>
+      </>
+    }>
       <ConfirmEmailContent />
     </Suspense>
   );

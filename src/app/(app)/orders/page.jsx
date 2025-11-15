@@ -19,19 +19,19 @@ export default function OrdersPage() {
         <table className="card" style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ textAlign: "left" }}>
-              <th style={{ padding: "12px 8px", borderBottom: "1px solid #ecebed" }}>Number</th>
-              <th style={{ padding: "12px 8px", borderBottom: "1px solid #ecebed" }}>Currency</th>
-              <th style={{ padding: "12px 8px", borderBottom: "1px solid #ecebed" }}>Status</th>
-              <th style={{ padding: "12px 8px", borderBottom: "1px solid #ecebed" }}>Date</th>
-              <th style={{ padding: "12px 8px", borderBottom: "1px solid #ecebed" }}>Amount</th>
+              <th style={{ padding: "12px 8px" }}>Number</th>
+              <th style={{ padding: "12px 8px" }}>Currency</th>
+              <th style={{ padding: "12px 8px" }}>Status</th>
+              <th style={{ padding: "12px 8px" }}>Date</th>
+              <th style={{ padding: "12px 8px" }}>Amount</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((o) => (
               <tr key={o.id}>
-                <td style={{ padding: "16px 8px", borderBottom: "1px solid #f1f1f3", fontWeight: 700 }}>{o.id}</td>
-                <td style={{ padding: "16px 8px", borderBottom: "1px solid #f1f1f3" }}>{o.currency}</td>
-                <td style={{ padding: "16px 8px", borderBottom: "1px solid #f1f1f3" }}>
+                <td style={{ padding: "16px 8px", fontWeight: 700 }}>{o.id}</td>
+                <td style={{ padding: "16px 8px" }}>{o.currency}</td>
+                <td style={{ padding: "16px 8px" }}>
                   {o.status === "Successful" ? (
                     <span className="status-pill status-success">{o.status}</span>
                   ) : o.status === "Verification" ? (
@@ -40,8 +40,8 @@ export default function OrdersPage() {
                     <span className="status-pill status-warn">{o.status}</span>
                   )}
                 </td>
-                <td style={{ padding: "16px 8px", borderBottom: "1px solid #f1f1f3" }}>{o.date}</td>
-                <td style={{ padding: "16px 8px", borderBottom: "1px solid #f1f1f3" }}>{o.amount}</td>
+                <td style={{ padding: "16px 8px" }}>{o.date}</td>
+                <td style={{ padding: "16px 8px" }}>{o.amount}</td>
               </tr>
             ))}
           </tbody>
