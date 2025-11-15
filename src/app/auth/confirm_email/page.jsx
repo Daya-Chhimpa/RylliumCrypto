@@ -31,7 +31,7 @@ function ConfirmEmailContent() {
       <link rel="stylesheet" href="/custom-style.css" />
       <div className="auth-wrap">
         <div className="auth-side">
-          <div className="auth-brand"><span className="logo">A</span><div className="Tag">Alpacross</div></div>
+          <div className="auth-brand"><span className="logo">F</span><div className="Tag">Fortario</div></div>
           <div className="auth-title">Email confirmation</div>
           {!searchParams.get("token") && (
             <>
@@ -47,7 +47,7 @@ function ConfirmEmailContent() {
         </div>
         <div className="auth-hero">
           <div className="auth-hero-inner">
-            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">A</span><div className="Tag">Alpacross</div></div>
+            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">F</span><div className="Tag">Fortario</div></div>
             <h2>Welcome aboard!</h2>
             <p>Just one more step to activate your account and start trading.</p>
           </div>

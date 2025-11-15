@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Alpacross App",
+  title: "Fortario App",
   description: "Modern cryptocurrency trading platform",
   icons: {
     icon: [
