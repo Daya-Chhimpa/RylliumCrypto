@@ -24,8 +24,8 @@ export default function AppShell({ children }) {
       <main className="rl-main">
         <div className="rl-mobilebar">
           <div className="rl-brand mini">
-            <div className="rl-logo">U</div>
-            <span className="rl-brand-text">Unduct</span>
+            <div className="rl-logo">S</div>
+            <span className="rl-brand-text">Satorem</span>
           </div>
           <button
             className="rl-hamburger"

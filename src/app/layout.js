@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Unduct - Crypto Trading Platform",
+  title: "Satorem - Crypto Trading Platform",
   description: "Modern cryptocurrency trading platform for secure and fast trading",
   icons: {
     icon: [
-      { url: "/faicon.png", type: "image/png", sizes: "32x32" },
-      { url: "/faicon.png", type: "image/png", sizes: "16x16" },
+      { url: "/storm.png", type: "image/png", sizes: "32x32" },
+      { url: "/storm.png", type: "image/png", sizes: "16x16" },
     ],
-    shortcut: "/faicon.png",
-    apple: "/faicon.png",
+    shortcut: "/storm.png",
+    apple: "/storm.png",
   },
 };
 

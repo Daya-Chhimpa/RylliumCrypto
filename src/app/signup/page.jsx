@@ -33,9 +33,9 @@ function SignUpContent() {
       <link rel="stylesheet" href="/custom-style.css" />
       <div className="auth-wrap">
         <div className="auth-side">
-          <div className="auth-brand"><span className="logo">U</span><div className="Tag">Unduct</div></div>
+          <div className="auth-brand"><span className="logo">S</span><div className="Tag">Satorem</div></div>
           <div className="auth-title">Create your account</div>
-          <p className="auth-sub">Join millions of traders on Unduct. It only takes a minute.</p>
+          <p className="auth-sub">Join millions of traders on Satorem. It only takes a minute.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="name-row" style={{display:'flex', gap:8}}>
               <input name="firstName" className="auth-input" type="text" placeholder="First name" required />
@@ -54,7 +54,7 @@ function SignUpContent() {
         </div>
         <div className="auth-hero">
           <div className="auth-hero-inner">
-            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">U</span><div className="Tag">Unduct</div></div>
+            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">S</span><div className="Tag">Satorem</div></div>
             <h2>Welcome to the future of crypto</h2>
             <p>Secure, fast, and intuitive. Build and grow your portfolio with confidence.</p>
           </div>

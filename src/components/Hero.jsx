@@ -8,7 +8,7 @@ export default function Hero() {
       <div className="hero-inner">
         <p className="hero-kicker">Next‑Gen Crypto Platform</p>
         <h1 className="hero-title">
-          Welcome to <span>Unduct</span>
+          Welcome to <span>Satorem</span>
         </h1>
         <p className="hero-sub">
           The most advanced cryptocurrency trading platform designed for the future. Trade, invest, and grow your portfolio with cutting‑edge technology and unparalleled security.

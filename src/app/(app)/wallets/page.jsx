@@ -62,8 +62,8 @@ export default function WalletsPage() {
 
         .wallet-card:hover {
           transform: translateY(-4px);
-          box-shadow: 0 12px 32px rgba(59, 130, 246, 0.25);
-          border-color: rgba(59, 130, 246, 0.5);
+          box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5);
+          border-color: rgba(139, 92, 246, 0.6);
         }
 
         .wallet-card:hover::before {
@@ -109,8 +109,8 @@ export default function WalletsPage() {
         }
 
         .wallet-balance {
-          background: rgba(59, 130, 246, 0.08);
-          border: 1px solid rgba(59, 130, 246, 0.15);
+          background: rgba(139, 92, 246, 0.15);
+          border: 1px solid rgba(139, 92, 246, 0.3);
           border-radius: 12px;
           padding: 16px;
           margin-bottom: 20px;

@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
       <link rel="stylesheet" href="/custom-style.css" />
       <div className="auth-wrap">
         <div className="auth-side">
-          <div className="auth-brand"><span className="logo">U</span><div className="Tag">Unduct</div></div>
+          <div className="auth-brand"><span className="logo">S</span><div className="Tag">Satorem</div></div>
           <div className="auth-title">Reset your password</div>
           <p className="auth-sub">Enter your email and we’ll send you a reset link.</p>
           <form className="auth-form" onSubmit={handleSubmit}>
@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
         </div>
         <div className="auth-hero">
           <div className="auth-hero-inner">
-            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">U</span><div className="Tag">Unduct</div></div>
+            <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">S</span><div className="Tag">Satorem</div></div>
             <h2>Security first</h2>
             <p>We keep your account protected with best-in-class security.</p>
           </div>
