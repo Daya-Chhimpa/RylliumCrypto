@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Fortario App",
-  description: "Modern cryptocurrency trading platform",
+  title: "Unduct - Crypto Trading Platform",
+  description: "Modern cryptocurrency trading platform for secure and fast trading",
   icons: {
     icon: [
       { url: "/faicon.png", type: "image/png", sizes: "32x32" },

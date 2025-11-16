@@ -29,8 +29,8 @@ export default function Sidebar({ drawerOpen = false, onClose }) {
   return (
     <aside className={`rl-sidebar ${drawerOpen ? "open" : ""}`}>
       <div className="rl-brand">
-        <div className="rl-logo">F</div>
-        <span className="rl-brand-text">Fortario</span>
+        <div className="rl-logo">U</div>
+        <span className="rl-brand-text">Unduct</span>
       </div>
       <nav className="rl-nav">
         {NAV_TOP.map(({ href, label, icon: Icon }) => {
