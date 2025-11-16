@@ -20,11 +20,11 @@ export const metadata = {
   description: "Modern cryptocurrency trading platform for secure and fast trading",
   icons: {
     icon: [
-      { url: "/faicon.png", type: "image/png", sizes: "32x32" },
-      { url: "/faicon.png", type: "image/png", sizes: "16x16" },
+      { url: "/unduct.png", type: "image/png", sizes: "32x32" },
+      { url: "/unduct.png", type: "image/png", sizes: "16x16" },
     ],
-    shortcut: "/faicon.png",
-    apple: "/faicon.png",
+    shortcut: "/unduct.png",
+    apple: "/unduct.png",
   },
 };
 
