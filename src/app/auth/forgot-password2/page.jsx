@@ -34,7 +34,7 @@ function ForgotPassword2Content() {
   return (
     <div className="auth-wrap">
       <div className="auth-side">
-        <div className="auth-brand"><span className="logo">R</span><div className="Tag">Ryllium</div></div>
+        <div className="auth-brand"><span className="logo">PP</span><div className="Tag">PPrince</div></div>
         <div className="auth-title">Set new password</div>
         <form className="auth-form" onSubmit={handleSubmit}>
           <input name="newPassword" className="auth-input" type="password" placeholder="New password" required />
