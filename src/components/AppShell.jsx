@@ -24,8 +24,8 @@ export default function AppShell({ children }) {
       <main className="rl-main">
         <div className="rl-mobilebar">
           <div className="rl-brand mini">
-            <img src="/NB.png" alt="NB" className="rl-logo-img" style={{width: '28px', height: '28px', borderRadius: '7px'}} />
-            <span className="rl-brand-text">NB Crypto</span>
+            <img src="/PP.png" alt="PP" className="rl-logo-img" style={{width: '28px', height: '28px', borderRadius: '7px'}} />
+            <span className="rl-brand-text">PPrince Crypto</span>
           </div>
           <button
             className="rl-hamburger"

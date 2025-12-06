@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.nexbric.net";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.nexbric";
 
 const AUTH_TOKEN_KEY = "authToken";
 

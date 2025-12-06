@@ -48,8 +48,8 @@ function ForgotPassword2Content() {
       <div className="auth-wrap">
         <div className="auth-side">
           <div className="auth-brand">
-            <img src="/NB.png" alt="NB" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
-            <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+            <img src="/PP.png" alt="PP" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
+            <div className="Tag" style={{fontSize: '16px'}}>PPrince Crypto</div>
           </div>
           <div className="auth-title">Set new password</div>
           <p className="auth-sub">Enter your new password to reset your account.</p>
@@ -81,8 +81,8 @@ function ForgotPassword2Content() {
           <div className="auth-hero-inner">
             <img src="/crypto.png" alt="Crypto Security" className="auth-crypto-img" />
             <div className="auth-brand" style={{justifyContent:'center', marginTop: '16px'}}>
-              <img src="/NB.png" alt="NB" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
-              <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+              <img src="/PP.png" alt="PP" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
+              <div className="Tag" style={{fontSize: '16px'}}>PPrince Crypto</div>
             </div>
             <h2>Secure your account</h2>
             <p>Choose a strong password to keep your crypto safe.</p>

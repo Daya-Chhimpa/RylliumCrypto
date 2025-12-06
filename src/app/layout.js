@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "NB Crypto - Secure Cryptocurrency Trading Platform",
-  description: "Trade crypto securely with NB Crypto",
+  title: "PPrince Crypto - Secure Cryptocurrency Trading Platform",
+  description: "Trade crypto securely with PPrince Crypto",
   icons: {
     icon: [
-      { url: "/NB.png", type: "image/png", sizes: "32x32" },
-      { url: "/NB.png", type: "image/png", sizes: "16x16" },
+      { url: "/PP.png", type: "image/png", sizes: "32x32" },
+      { url: "/PP.png", type: "image/png", sizes: "16x16" },
     ],
-    shortcut: "/NB.png",
-    apple: "/NB.png",
+    shortcut: "/PP.png",
+    apple: "/PP.png",
   },
 };
 

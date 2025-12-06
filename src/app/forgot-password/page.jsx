@@ -33,8 +33,8 @@ export default function ForgotPasswordPage() {
       <div className="auth-wrap">
         <div className="auth-side">
           <div className="auth-brand">
-            <img src="/NB.png" alt="NB" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
-            <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+            <img src="/PP.png" alt="PP" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
+            <div className="Tag" style={{fontSize: '16px'}}>PPrince Crypto</div>
           </div>
           <div className="auth-title">Reset your password</div>
           <p className="auth-sub">Enter your email and we'll send you a reset link.</p>
@@ -54,8 +54,8 @@ export default function ForgotPasswordPage() {
           <div className="auth-hero-inner">
             <img src="/crypto.png" alt="Crypto Security" className="auth-crypto-img" />
             <div className="auth-brand" style={{justifyContent:'center', marginTop: '16px'}}>
-              <img src="/NB.png" alt="NB" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
-              <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+              <img src="/PP.png" alt="PP" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
+              <div className="Tag" style={{fontSize: '16px'}}>PPrince Crypto</div>
             </div>
             <h2>Security first</h2>
             <p>We keep your account protected with best-in-class security.</p>

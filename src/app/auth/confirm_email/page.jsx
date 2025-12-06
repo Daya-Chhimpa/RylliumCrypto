@@ -70,7 +70,7 @@ function ConfirmEmailContent() {
           boxShadow: '0 8px 24px rgba(76, 64, 247, 0.25)',
           padding: 8
         }}>
-          <img src="/NB.png" alt="NB" style={{width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16}} />
+          <img src="/PP.png" alt="PP" style={{width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16}} />
         </div>
         
         <h1 style={{fontSize: 32, fontWeight: 800, marginBottom: 16, color: '#1a1a1a'}}>

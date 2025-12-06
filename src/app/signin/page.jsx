@@ -49,8 +49,8 @@ function SignInContent() {
       <div className="auth-wrap">
         <div className="auth-side">
           <div className="auth-brand">
-            <img src="/NB.png" alt="NB" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
-            <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+            <img src="/PP.png" alt="PP" style={{width: '40px', height: '40px', borderRadius: '10px'}} />
+            <div className="Tag" style={{fontSize: '16px'}}>PPrince Crypto</div>
           </div>
           <div className="auth-title">Sign in</div>
           <p className="auth-sub">Welcome back! Access your account to continue trading.</p>
@@ -72,10 +72,10 @@ function SignInContent() {
           <div className="auth-hero-inner">
             <img src="/crypto.png" alt="Crypto Trading" className="auth-crypto-img" />
             <div className="auth-brand" style={{justifyContent:'center', marginTop: '16px'}}>
-              <img src="/NB.png" alt="NB" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
-              <div className="Tag" style={{fontSize: '16px'}}>NB Crypto</div>
+              <img src="/PP.png" alt="PP" style={{width: '36px', height: '36px', borderRadius: '9px'}} />
+              <div className="Tag" style={{fontSize: '16px'}}>PPrince Crypto</div>
             </div>
-            <h2>Trade smarter with NB Crypto</h2>
+            <h2>Trade smarter with PPrince Crypto</h2>
             <p>Bank-grade security, lightning-fast execution, and powerful analytics.</p>
           </div>
         </div>
