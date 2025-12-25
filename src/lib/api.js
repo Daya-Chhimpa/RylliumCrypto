@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.nexbric.net";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.nexbric.net";
 
 const AUTH_TOKEN_KEY = "authToken";
 
@@ -64,11 +64,11 @@ export async function apiRequest(path, options = {}) {
 
 export const endpoints = {
   ticker: () => "/ticker",
-  register: () => "/auth/register",
-  confirmEmail: () => "/auth/confirm_email",
-  login: () => "/auth/login",
-  forgotPassword: () => "/auth/forgot-password",
-  forgotPassword2: () => "/auth/forgot-password2",
+  register: () => "/user/register",
+  confirmEmail: () => "/user/confirm_email",
+  login: () => "/user/login",
+  forgotPassword: () => "/user/forgot-password",
+  forgotPassword2: () => "/user/forgot-password2",
   preEnable2fa: () => "/user/enable2fa", // GET
   enable2fa: () => "/user/enable2fa",    // PUT
   disable2fa: () => "/user/disable2fa",   // PUT
