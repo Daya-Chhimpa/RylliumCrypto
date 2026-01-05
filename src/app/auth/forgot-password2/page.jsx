@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPasswordThunk } from "@/store/slices/authSlice";
+import { addToast } from "@/store/slices/uiSlice";
 
 function ForgotPassword2Content() {
   const router = useRouter();
@@ -37,7 +38,7 @@ function ForgotPassword2Content() {
     console.log("📥 Reset password response:", res);
     
     if (res.meta.requestStatus === "fulfilled") {
-      alert("Password reset successful! You can now sign in with your new password.");
+      // dispatch(addToast({ type: 'success', title: 'Reset Successful', description: 'Password reset successful! You can now sign in with your new password.' }));
       router.push("/signin");
     }
   }

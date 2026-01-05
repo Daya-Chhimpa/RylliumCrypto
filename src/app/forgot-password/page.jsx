@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotPasswordThunk } from "@/store/slices/authSlice";
+import { addToast } from "@/store/slices/uiSlice";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function ForgotPasswordPage() {
     
     if (res.meta.requestStatus === "fulfilled") {
       // Show success message and redirect
-      alert("Password reset link sent! Check your email.");
+      // dispatch(addToast({ type: 'success', title: 'Email Sent', description: 'Password reset link sent! Check your email.' }));
       router.push("/signin");
     }
   }

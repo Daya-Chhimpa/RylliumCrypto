@@ -63,16 +63,27 @@ export async function apiRequest(path, options = {}) {
 }
 
 export const endpoints = {
-  ticker: () => "/ticker",
-  register: () => "/user/register",
-  confirmEmail: () => "/user/confirm_email",
-  login: () => "/user/login",
-  forgotPassword: () => "/user/forgot-password",
-  forgotPassword2: () => "/user/forgot-password2",
+  // ticker: () => "/ticker",
+  // register: () => "/users/register",
+  // confirmEmail: () => "/users/confirm_email",
+  // login: () => "/users/login",
+  // forgotPassword: () => "/users/forgot-password",
+  // forgotPassword2: () => "/users/forgot-password2",
+  // preEnable2fa: () => "/users/enable2fa", // GET
+  // enable2fa: () => "/users/enable2fa",    // PUT
+  // disable2fa: () => "/users/disable2fa",   // PUT
+  // twoFAStatus: () => "/users/twoFAStatus", // GET -> { is2FaEnabled: 1|0 }
+   ticker: () => "/ticker",
+  register: () => "/users/register",
+  confirmEmail: () => "/auth/verify_email",
+  login: () => "/users/login",
+  forgotPassword: () => "/auth/forgot_password",
+  forgotPassword2: () => "/auth/update_password",
   preEnable2fa: () => "/user/enable2fa", // GET
   enable2fa: () => "/user/enable2fa",    // PUT
   disable2fa: () => "/user/disable2fa",   // PUT
-  twoFAStatus: () => "/user/twoFAStatus", // GET -> { is2FaEnabled: 1|0 }
+  twoFAStatus: () => "/user/twoFAStatus", // GET ->
+  
 };
 
 // Safely decode a JWT payload without verifying signature (client-side display only)
