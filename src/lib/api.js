@@ -85,6 +85,8 @@ export const endpoints = {
   twoFAStatus: () => "/user/twoFAStatus", // GET ->
   sumsubAccessToken: () => "/user/sumsub/token", // GET -> { token: "..." }
   verificationStatus: () => "/user/verification-status", // GET -> { isVerified: true/false }
+  initiatePayment: () => "/payment/initiate", // POST -> { amount, currency } -> { requires_action: bool, redirect_url: string, ... }
+  paymentStatus: (id) => `/payment/status/${id}`, // GET -> { status: "succeeded" | "pending" | "failed" }
 };
 
 // Safely decode a JWT payload without verifying signature (client-side display only)

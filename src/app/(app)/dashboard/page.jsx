@@ -1,6 +1,8 @@
 "use client";
 
 import ExchangeForm from "@/components/ExchangeForm";
+import Payment3DS from "@/components/Payment3DS";
+import LivePrices from "@/components/LivePrices";
 import { FaChartLine, FaWallet, FaExchangeAlt, FaShieldAlt } from "react-icons/fa";
 
 export default function DashboardHome() {
@@ -86,20 +88,38 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* Exchange Section */}
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(76, 64, 247, 0.03) 0%, rgba(99, 102, 241, 0.03) 100%)',
-        borderRadius: '24px',
-        padding: '32px',
-        marginBottom: '32px',
-        border: '1px solid rgba(76, 64, 247, 0.1)'
-      }}>
-        <h2 style={{fontSize: '28px', fontWeight: 800, marginBottom: '8px'}}>
-          <span style={{background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Exchange</span> Crypto
-        </h2>
-        <p style={{color: 'var(--muted)', fontSize: '15px', marginBottom: '24px'}}>Trade with confidence using our secure and fast platform</p>
-        <ExchangeForm />
+      <div className="dashboard-grid-layout" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }}>
+        <div className="main-col">
+          {/* Exchange Section */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(76, 64, 247, 0.03) 0%, rgba(99, 102, 241, 0.03) 100%)',
+            borderRadius: '24px',
+            padding: '32px',
+            marginBottom: '32px',
+            border: '1px solid rgba(76, 64, 247, 0.1)'
+          }}>
+            <h2 style={{fontSize: '28px', fontWeight: 800, marginBottom: '8px'}}>
+              <span style={{background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>Exchange</span> Crypto
+            </h2>
+            <p style={{color: 'var(--muted)', fontSize: '15px', marginBottom: '24px'}}>Trade with confidence using our secure and fast platform</p>
+            <ExchangeForm />
+          </div>
+
+          {/* Live Prices */}
+          <LivePrices />
+        </div>
+
+        <div className="side-col">
+           {/* Payment 3DS Section */}
+           <Payment3DS />
+        </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 1024px) {
+          .dashboard-grid-layout { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }
