@@ -113,6 +113,17 @@ export const twoFAStatusThunk = createAsyncThunk(
   }
 );
 
+export const verificationStatusThunk = createAsyncThunk(
+  "auth/verificationStatus",
+  async (_payload, { rejectWithValue }) => {
+    try {
+      return await apiRequest(endpoints.verificationStatus(), { method: "GET" });
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -176,7 +187,12 @@ const authSlice = createSlice({
       // twoFA status
       .addCase(twoFAStatusThunk.pending, pending)
       .addCase(twoFAStatusThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(twoFAStatusThunk.rejected, rejected);
+      .addCase(twoFAStatusThunk.rejected, rejected)
+
+      // Verification Status
+      .addCase(verificationStatusThunk.pending, pending)
+      .addCase(verificationStatusThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(verificationStatusThunk.rejected, rejected);
   },
 });
 
