@@ -1,5 +1,6 @@
 // const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.pprince.io";
-const BASE_URL = "https://backend-dev.alpacross.com";
+// const BASE_URL = "https://backend-dev.alpacross.com";
+const BASE_URL = "https://api.pprince.io";
 
 const AUTH_TOKEN_KEY = "authToken";
 
@@ -65,15 +66,33 @@ export async function apiRequest(path, options = {}) {
 
 export const endpoints = {
   ticker: () => "/ticker",
-  register: () => "/auth/register",
-  confirmEmail: () => "/auth/confirm_email",
-  login: () => "/auth/login",
-  forgotPassword: () => "/auth/forgot-password",
-  forgotPassword2: () => "/auth/forgot-password2",
+  register: () => "/users/register",
+  confirmEmail: () => "/auth/verify_email",
+  login: () => "/users/login",
+  forgotPassword: () => "/auth/forgot_password",
+  forgotPassword2: () => "/auth/update_password",
   preEnable2fa: () => "/user/enable2fa", // GET
   enable2fa: () => "/user/enable2fa",    // PUT
   disable2fa: () => "/user/disable2fa",   // PUT
   twoFAStatus: () => "/user/twoFAStatus", // GET -> { is2FaEnabled: 1|0 }
+  
+  // Sumsub Integration
+  // Backend Requirement: GET /sumsub/access-token
+  // Should return: { token: "sbx:..." } or { access_token: "..." }
+  // Headers: Authorization: Bearer <user_token>
+  // Backend info: Create an applicant on backend, generate access token with levelName 'basic-kyc-level' (or as configured)
+  sumsubAccessToken: () => "/sumsub/access-token",
+
+  // WEBHOOK SETUP (Backend Only):
+  // 1. Sumsub Dashboard -> Developer Space -> Webhooks
+  // 2. Endpoint: POST /api/callbacks/sumsub (or similar on your backend)
+  // 3. Events to watch: 'applicantReviewed'
+  // 4. Logic: If reviewResult.reviewAnswer === 'GREEN', update user.isVerified = true in DB.
+  
+  // Check verification status
+  // Backend Requirement: GET /user/verification-status
+  // Should return: { isVerified: true/false, status: "pending/verified/rejected" }
+  getVerificationStatus: () => "/user/verification-status",
 };
 
 // Safely decode a JWT payload without verifying signature (client-side display only)
@@ -115,6 +134,42 @@ export function getTokenPayload() {
   } catch {
     return null;
   }
+}
+
+/**
+ * Fetch all wallets for the authenticated user
+ * POST /users/wallets (Backend uses POST method)
+ * Response: Array of wallet objects or { wallets: [...] }
+ */
+export async function getWallets() {
+  const response = await apiRequest("/users/wallets", { method: "POST" });
+  if (Array.isArray(response)) return response;
+  if (response?.wallets) return response.wallets;
+  if (response?.data) return Array.isArray(response.data) ? response.data : [];
+  return [];
+}
+
+/**
+ * Create a new wallet
+ * POST /users/add-wallet
+ * Body: { walletAddress: string, network: string }
+ */
+export async function createWallet(data) {
+  return apiRequest("/users/add-wallet", {
+    method: "POST",
+    body: {
+      walletAddress: data.address,
+      network: data.chain
+    },
+  });
+}
+
+/**
+ * Get a specific wallet by ID
+ * GET /wallets/:id
+ */
+export async function getWallet(id) {
+  return apiRequest(`/wallets/${id}`);
 }
 
 
