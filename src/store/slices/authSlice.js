@@ -117,7 +117,7 @@ export const verificationStatusThunk = createAsyncThunk(
   "auth/verificationStatus",
   async (_payload, { rejectWithValue }) => {
     try {
-      return await apiRequest(endpoints.verificationStatus(), { method: "GET" });
+      return await apiRequest(endpoints.verificationStatus(), { method: "POST" });
     } catch (e) {
       return rejectWithValue(e.message);
     }

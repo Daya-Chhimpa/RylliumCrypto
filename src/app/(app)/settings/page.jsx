@@ -233,22 +233,22 @@ export default function SettingsPage() {
                 gap:'8px',
                 padding:'8px 16px',
                 borderRadius:'8px',
-                backgroundColor: statusData?.isVerified || statusData?.verified ? '#d4edda' : '#fff3cd',
-                border: `1px solid ${statusData?.isVerified || statusData?.verified ? '#c3e6cb' : '#ffeeba'}`,
+                backgroundColor: (statusData?.isVerified || statusData?.verified || statusData?.kycStatus === 'APPROVED') ? '#d4edda' : '#fff3cd',
+                border: `1px solid ${(statusData?.isVerified || statusData?.verified || statusData?.kycStatus === 'APPROVED') ? '#c3e6cb' : '#ffeeba'}`,
               }}>
                 <span style={{fontSize:'18px'}}>
-                  {statusData?.isVerified || statusData?.verified ? '✅' : '⏳'}
+                  {(statusData?.isVerified || statusData?.verified || statusData?.kycStatus === 'APPROVED') ? '✅' : '⏳'}
                 </span>
                 <span style={{
                   fontWeight:'600',
-                  color: statusData?.isVerified || statusData?.verified ? '#155724' : '#856404'
+                  color: (statusData?.isVerified || statusData?.verified || statusData?.kycStatus === 'APPROVED') ? '#155724' : '#856404'
                 }}>
-                  {statusData?.isVerified || statusData?.verified ? 'Verified' : 'Not Verified'}
+                  {(statusData?.isVerified || statusData?.verified || statusData?.kycStatus === 'APPROVED') ? 'Verified' : 'Not Verified'}
                 </span>
               </div>
             </div>
 
-            {statusData?.isVerified || statusData?.verified ? (
+            {(statusData?.isVerified || statusData?.verified || statusData?.kycStatus === 'APPROVED') ? (
               <div style={{
                 padding:'16px',
                 borderRadius:'8px',

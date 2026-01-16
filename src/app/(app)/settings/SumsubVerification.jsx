@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import SumsubWebSdk from "@sumsub/websdk-react";
-import { apiRequest, endpoints } from "@/lib/api";
+import { apiRequest, endpoints, getAuthToken } from "@/lib/api";
 
 export default function SumsubVerification({ onCompleted }) {
   const dispatch = useDispatch();
@@ -14,12 +14,24 @@ export default function SumsubVerification({ onCompleted }) {
   const fetchToken = async () => {
     try {
       setStatus("loading");
-      // Ensure this endpoint exists on your backend!
-      const endpoint = endpoints?.sumsubAccessToken ? endpoints.sumsubAccessToken() : "/sumsub/access-token";
+      // Use the new startKyc endpoint
+      const endpoint = endpoints?.startKyc ? endpoints.startKyc() : "/api/kyc/startKyc";
       
-      const res = await apiRequest(endpoint);
-      // Handle different possible response structures
-      const token = res?.token || res?.access_token;
+      // The API is a POST request
+      const authToken = getAuthToken();
+      console.log("Using Auth Token:", authToken); // Debugging
+
+      const res = await apiRequest(endpoint, { 
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json" 
+        },
+        body: {} // Ensure body is sent so Content-Type is respected if needed
+      });
+      
+      // Response format: { accessToken: "...", kycStatus: "PENDING", ... }
+      const token = res?.accessToken || res?.token || res?.access_token;
       
       if (token) {
         setAccessToken(token);
@@ -36,9 +48,9 @@ export default function SumsubVerification({ onCompleted }) {
 
   const expirationHandler = async () => {
     try {
-      const endpoint = endpoints?.sumsubAccessToken ? endpoints.sumsubAccessToken() : "/sumsub/access-token";
-      const res = await apiRequest(endpoint);
-      return res?.token || res?.access_token;
+      const endpoint = endpoints?.startKyc ? endpoints.startKyc() : "/api/kyc/startKyc";
+      const res = await apiRequest(endpoint, { method: "POST" });
+      return res?.accessToken || res?.token || res?.access_token;
     } catch (err) {
       console.error("Failed to refresh Sumsub token:", err);
       throw err;
@@ -104,7 +116,7 @@ export default function SumsubVerification({ onCompleted }) {
     return (
       <div className="text-center p-6 bg-gray-50 rounded-xl border border-dashed border-gray-300">
         <div className="mb-4">
-          <svg className="mx-auto h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="mx-auto text-indigo-500" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>

@@ -1,4 +1,5 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.nexbric.net";
+// const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.nexbric.net";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://e4ee74a9be11.ngrok-free.app";
 
 const AUTH_TOKEN_KEY = "authToken";
 
@@ -84,7 +85,8 @@ export const endpoints = {
   disable2fa: () => "/user/disable2fa",   // PUT
   twoFAStatus: () => "/user/twoFAStatus", // GET ->
   sumsubAccessToken: () => "/user/sumsub/token", // GET -> { token: "..." }
-  verificationStatus: () => "/user/verification-status", // GET -> { isVerified: true/false }
+  startKyc: () => "/api/kyc/startKyc", // POST -> { accessToken: "...", kycStatus: "..." }
+  verificationStatus: () => "/api/kyc/kycStatus", // GET/POST -> { kycStatus: "APPROVED" | "PENDING", ... }
   initiatePayment: () => "/payment/initiate", // POST -> { amount, currency } -> { requires_action: bool, redirect_url: string, ... }
   paymentStatus: (id) => `/payment/status/${id}`, // GET -> { status: "succeeded" | "pending" | "failed" }
 };
