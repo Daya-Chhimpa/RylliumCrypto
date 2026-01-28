@@ -1,29 +1,31 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { apiRequest, endpoints } from "@/lib/api";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { cryptoApi } from "@/lib/cryptoApi";
 
-const initialState = { data: null, status: "idle", error: null };
-
-export const fetchTicker = createAsyncThunk("ticker/fetch", async (_, { rejectWithValue }) => {
+export const fetchPricesThunk = createAsyncThunk("ticker/fetchPrices", async (_, { rejectWithValue }) => {
   try {
-    return await apiRequest(endpoints.ticker());
-  } catch (e) {
-    return rejectWithValue(e.message);
+    const data = await cryptoApi.fetchPrices();
+    if (!data) throw new Error("Failed to fetch prices");
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.message);
   }
 });
 
 const tickerSlice = createSlice({
   name: "ticker",
-  initialState,
+  initialState: {
+    prices: {}, // { BTC: { USD: ... }, ... }
+    lastUpdated: null,
+    status: "idle",
+  },
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchTicker.pending, (state) => { state.status = "loading"; state.error = null; })
-      .addCase(fetchTicker.fulfilled, (state, action) => { state.status = "succeeded"; state.data = action.payload; })
-      .addCase(fetchTicker.rejected, (state, action) => { state.status = "failed"; state.error = action.payload || action.error.message; });
-  }
+    builder.addCase(fetchPricesThunk.fulfilled, (state, action) => {
+      state.prices = action.payload;
+      state.lastUpdated = Date.now();
+      state.status = "succeeded";
+    });
+  },
 });
 
 export default tickerSlice.reducer;
-
-
-

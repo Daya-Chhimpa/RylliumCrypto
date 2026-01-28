@@ -65,15 +65,17 @@ export async function apiRequest(path, options = {}) {
 
 export const endpoints = {
   ticker: () => "/ticker",
-  register: () => "/auth/register",
-  confirmEmail: () => "/auth/confirm_email",
-  login: () => "/auth/login",
-  forgotPassword: () => "/auth/forgot-password",
-  forgotPassword2: () => "/auth/forgot-password2",
-  preEnable2fa: () => "/user/enable2fa", // GET
-  enable2fa: () => "/user/enable2fa",    // PUT
-  disable2fa: () => "/user/disable2fa",   // PUT
-  twoFAStatus: () => "/user/twoFAStatus", // GET -> { is2FaEnabled: 1|0 }
+  register: () => "/users/register",
+  confirmEmail: () => "/auth/verify_email",
+  login: () => "/users/login",
+  forgotPassword: () => "/auth/forgot_password",
+  forgotPassword2: () => "/auth/update_password",
+  
+  // KYC / Sumsub
+  sumsubAccessToken: () => "/sumsub/access-token",
+  getVerificationStatus: () => "/user/verification-status",
+  kycStatus: () => "/api/kyc/kycStatus",
+  startKyc: () => "/api/kyc/startKyc",
 };
 
 // Safely decode a JWT payload without verifying signature (client-side display only)
