@@ -1,7 +1,7 @@
 // const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.pprince.io";
 // const BASE_URL = "https://backend-dev.alpacross.com";
+// const BASE_URL = "api.alpacross.com";
 const BASE_URL = "api.alpacross.com";
-
 const AUTH_TOKEN_KEY = "authToken";
 
 export function setAuthToken(token) {
@@ -93,6 +93,10 @@ export const endpoints = {
   // Backend Requirement: GET /user/verification-status
   // Should return: { isVerified: true/false, status: "pending/verified/rejected" }
   getVerificationStatus: () => "/user/verification-status",
+
+  // New KYC Endpoints
+  getKycStatus: () => "/api/kyc/kycStatus", // GET
+  startKyc: () => "/api/kyc/startKyc",     // POST
 };
 
 // Safely decode a JWT payload without verifying signature (client-side display only)
