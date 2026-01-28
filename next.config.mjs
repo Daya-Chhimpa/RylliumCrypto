@@ -6,11 +6,8 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   images: { unoptimized: true },
-
-  // ❌ remove basePath and assetPrefix — handled by Apache
   basePath: '',
   assetPrefix: '',
-
   trailingSlash: true,
 };
 
