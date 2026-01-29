@@ -30,7 +30,6 @@ function SignInContent() {
     const payload = {
       email: form.get("email"),
       password: form.get("password"),
-      twoFactorCode: form.get("twoFactorCode") || "",
     };
     const res = await dispatch(loginThunk(payload));
     if (res.meta.requestStatus === "fulfilled") {
@@ -49,7 +48,6 @@ function SignInContent() {
           <form className="auth-form" onSubmit={handleSubmit}>
             <input name="email" className="auth-input" type="email" placeholder="Email" required />
             <input name="password" className="auth-input" type="password" placeholder="Password" required />
-            <input name="twoFactorCode" className="auth-input" type="text" placeholder="Two-factor code (optional)" inputMode="numeric" pattern="[0-9]*" />
             <button className="auth-btn" type="submit">Continue</button>
           </form>
           {authStatus === "loading" && <p style={{marginTop:8}}>Signing in...</p>}

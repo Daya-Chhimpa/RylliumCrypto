@@ -67,46 +67,25 @@ export const resetPasswordThunk = createAsyncThunk(
   }
 );
 
-// 2FA
-export const preEnable2faThunk = createAsyncThunk(
-  "auth/preEnable2fa",
-  async (_payload, { rejectWithValue }) => {
+// KYC / Sumsub Thunks
+export const startKycThunk = createAsyncThunk(
+  "auth/startKyc",
+  async (_, { rejectWithValue }) => {
     try {
-      return await apiRequest(endpoints.preEnable2fa(), { method: "GET" });
+      return await apiRequest(endpoints.startKyc(), { method: "POST" });
     } catch (e) {
+      // Fallback or specific error handling
+      console.error("KYC Start Error", e);
       return rejectWithValue(e.message);
     }
   }
 );
 
-export const enable2faThunk = createAsyncThunk(
-  "auth/enable2fa",
-  async (payload, { rejectWithValue }) => {
+export const checkKycStatusThunk = createAsyncThunk(
+  "auth/checkKycStatus",
+  async (_, { rejectWithValue }) => {
     try {
-      return await apiRequest(endpoints.enable2fa(), { method: "PUT", body: payload });
-    } catch (e) {
-      return rejectWithValue(e.message);
-    }
-  }
-);
-
-export const disable2faThunk = createAsyncThunk(
-  "auth/disable2fa",
-  async (payload, { rejectWithValue }) => {
-    try {
-      return await apiRequest(endpoints.disable2fa(), { method: "PUT", body: payload });
-    } catch (e) {
-      return rejectWithValue(e.message);
-    }
-  }
-);
-
-// Fetch 2FA status
-export const twoFAStatusThunk = createAsyncThunk(
-  "auth/twoFAStatus",
-  async (_payload, { rejectWithValue }) => {
-    try {
-      return await apiRequest(endpoints.twoFAStatus(), { method: "GET" });
+      return await apiRequest(endpoints.kycStatus());
     } catch (e) {
       return rejectWithValue(e.message);
     }
@@ -160,28 +139,25 @@ const authSlice = createSlice({
       .addCase(resetPasswordThunk.fulfilled, (state) => { state.status = "succeeded"; })
       .addCase(resetPasswordThunk.rejected, rejected)
 
-      // 2FA
-      .addCase(preEnable2faThunk.pending, pending)
-      .addCase(preEnable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(preEnable2faThunk.rejected, rejected)
-
-      .addCase(enable2faThunk.pending, pending)
-      .addCase(enable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(enable2faThunk.rejected, rejected)
-
-      .addCase(disable2faThunk.pending, pending)
-      .addCase(disable2faThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(disable2faThunk.rejected, rejected)
-
-      // twoFA status
-      .addCase(twoFAStatusThunk.pending, pending)
-      .addCase(twoFAStatusThunk.fulfilled, (state) => { state.status = "succeeded"; })
-      .addCase(twoFAStatusThunk.rejected, rejected);
+      // KYC
+      .addCase(startKycThunk.pending, pending)
+      .addCase(startKycThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(startKycThunk.rejected, rejected)
+      
+      .addCase(checkKycStatusThunk.pending, (state) => { /* Don't set global loading necessary for polling */ })
+      .addCase(checkKycStatusThunk.fulfilled, (state, action) => { 
+          // Update user status if available
+          if(state.user && action.payload?.kycStatus) {
+              state.user.kycStatus = action.payload.kycStatus;
+          }
+      })
+      .addCase(checkKycStatusThunk.rejected, (state, action) => { /* Silent failure acceptable for polling */ });
   },
 });
 
 export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
+
 
 

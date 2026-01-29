@@ -1,45 +1,31 @@
 import { NextResponse } from "next/server";
-
 const AUTH_COOKIE = "auth";
 
 export function middleware(request) {
-  const { pathname, searchParams } = request.nextUrl;
   const isAuth = request.cookies.get(AUTH_COOKIE)?.value === "1";
+  const { pathname } = request.nextUrl;
+  
+  // Define protected routes
+  const protectedRoutes = ["/dashboard", "/settings", "/wallets"]; 
+  // Should adjust this list based on actual app structure
+  
+  // Define auth routes (public but redirect to dashboard if logged in)
+  const authRoutes = ["/signin", "/signup", "/forgot-password"];
 
-  const isAuthPage = pathname === "/signin" || pathname === "/signup" || pathname === "/forgot-password" || pathname.startsWith("/auth/");
-  const isAppRoute =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/orders") ||
-    pathname.startsWith("/wallets") ||
-    pathname.startsWith("/settings");
+  const isProtected = protectedRoutes.some(route => pathname.startsWith(route));
+  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
 
-  if (!isAuth && isAppRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/signin";
-    url.searchParams.set("next", pathname + (request.nextUrl.search || ""));
-    return NextResponse.redirect(url);
+  if (isProtected && !isAuth) {
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  if (isAuth && isAuthPage) {
-    const next = searchParams.get("next");
-    return NextResponse.redirect(new URL(next || "/dashboard", request.url));
+  if (isAuthRoute && isAuth) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-
+  
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/signin",
-    "/signup",
-    "/forgot-password",
-    "/auth/:path*",
-    "/dashboard/:path*",
-    "/orders/:path*",
-    "/wallets/:path*",
-    "/settings/:path*",
-  ],
-};
-
-
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+}

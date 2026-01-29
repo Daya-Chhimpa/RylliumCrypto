@@ -1,32 +1,88 @@
 "use client";
+import { useEffect, useState } from "react";
+import { getWallets, createWallet } from "@/lib/walletService";
+import { showLoader, hideLoader, addToast } from "@/store/slices/uiSlice";
+import { useDispatch } from "react-redux";
 
 export default function WalletsPage() {
-  const wallets = [
-    { id: 1, name: "Bitcoin Wallet", balance: "0.00234 BTC", usdValue: "$245.50", icon: "₿", gradient: "linear-gradient(135deg, #f7931a 0%, #ff9800 100%)" },
-    { id: 2, name: "Ethereum Wallet", balance: "1.543 ETH", usdValue: "$5,320.75", icon: "Ξ", gradient: "linear-gradient(135deg, #627eea 0%, #8b9dc3 100%)" },
-    { id: 3, name: "Solana Wallet", balance: "45.28 SOL", usdValue: "$7,940.32", icon: "◎", gradient: "linear-gradient(135deg, #14f195 0%, #9945ff 100%)" },
-  ];
+  const dispatch = useDispatch();
+  const [wallets, setWallets] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newWallet, setNewWallet] = useState({ address: "", chain: "ETH" });
+
+  const fetchWallets = async () => {
+    try {
+      const res = await getWallets();
+      if (res && (res.wallets || Array.isArray(res))) {
+        setWallets(res.wallets || res);
+      }
+    } catch (e) {
+      console.error(e);
+      dispatch(addToast({ type: "error", title: "Error", description: "Failed to fetch wallets" }));
+    }
+  };
+
+  useEffect(() => {
+    fetchWallets();
+  }, []);
+
+  const handleCreateWallet = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(showLoader());
+      await createWallet(newWallet);
+      dispatch(addToast({ type: "success", title: "Success", description: "Wallet added successfully" }));
+      setShowModal(false);
+      setNewWallet({ address: "", chain: "ETH" });
+      await fetchWallets();
+    } catch (e) {
+      dispatch(addToast({ type: "error", title: "Error", description: e.message || "Failed to create wallet" }));
+    } finally {
+      dispatch(hideLoader());
+    }
+  };
+
+  const getGradient = (network) => {
+    if(!network) return "linear-gradient(135deg, #627eea 0%, #8b9dc3 100%)";
+    const n = network.toLowerCase();
+    if(n.includes("btc") || n.includes("bitcoin")) return "linear-gradient(135deg, #f7931a 0%, #ff9800 100%)";
+    if(n.includes("eth")) return "linear-gradient(135deg, #627eea 0%, #8b9dc3 100%)";
+    if(n.includes("sol")) return "linear-gradient(135deg, #14f195 0%, #9945ff 100%)";
+    return "linear-gradient(135deg, #888 0%, #444 100%)";
+  };
+  
+  const getIcon = (network) => {
+      if(!network) return "Ξ";
+      const n = network.toLowerCase();
+      if(n.includes("btc")) return "₿";
+      if(n.includes("eth")) return "Ξ";
+      if(n.includes("sol")) return "◎";
+      return "$";
+  }
 
   return (
     <div className="rl-content">
-      <h1 className="rl-page-title">Your <span>wallets</span></h1>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <h1 className="rl-page-title">Your <span>wallets</span></h1>
+          <button className="rl-btn rl-btn-primary" onClick={() => setShowModal(true)}>+ Add Wallet</button>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginTop: 20 }}>
-        {wallets.map((wallet) => (
-          <div key={wallet.id} className="wallet-card">
+        {wallets.length === 0 ? <p>No wallets found.</p> : wallets.map((wallet) => (
+          <div key={wallet.id || wallet._id} className="wallet-card">
             <div className="wallet-card-header">
-              <div className="wallet-icon" style={{ background: wallet.gradient }}>
-                {wallet.icon}
+              <div className="wallet-icon" style={{ background: getGradient(wallet.network || wallet.currency || "ETH") }}>
+                {getIcon(wallet.network || wallet.currency || "ETH")}
               </div>
               <div className="wallet-info">
-                <div className="wallet-name">{wallet.name}</div>
-                <div className="wallet-label">CRYPTO WALLET</div>
+                <div className="wallet-name">{wallet.name || wallet.walletAddress || "Unknown Wallet"}</div>
+                <div className="wallet-label">{wallet.network || "CRYPTO"} WALLET</div>
               </div>
             </div>
             
             <div className="wallet-balance">
-              <div className="wallet-amount">{wallet.balance}</div>
-              <div className="wallet-usd">{wallet.usdValue} USD</div>
+              <div className="wallet-amount">{wallet.balance ? parseFloat(wallet.balance).toFixed(6) : "0.00"}</div>
+              <div className="wallet-usd">{wallet.usdBalance ? `$${wallet.usdBalance}` : "0.00 USD"}</div>
             </div>
 
             <div className="wallet-actions">
@@ -36,8 +92,54 @@ export default function WalletsPage() {
           </div>
         ))}
       </div>
+      
+      {showModal && (
+        <div className="modal-overlay">
+            <div className="modal">
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+                    <h3>Add New Wallet</h3>
+                    <button onClick={()=>setShowModal(false)} style={{background:'none',border:'none',color:'white',fontSize:20,cursor:'pointer'}}>×</button>
+                </div>
+                <form onSubmit={handleCreateWallet}>
+                    <div style={{marginBottom:16}}>
+                        <label className="label">Network</label>
+                        <select 
+                            className="auth-input" 
+                            value={newWallet.chain} 
+                            onChange={e => setNewWallet({...newWallet, chain: e.target.value})}
+                        >
+                            <option value="BTC">Bitcoin (BTC)</option>
+                            <option value="ETH">Ethereum (ETH)</option>
+                            <option value="SOL">Solana (SOL)</option>
+                            <option value="USDT">Tether (USDT)</option>
+                        </select>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                        <label className="label">Wallet Address</label>
+                        <input 
+                            className="auth-input" 
+                            placeholder="0x..." 
+                            value={newWallet.address} 
+                            onChange={e => setNewWallet({...newWallet, address: e.target.value})}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="rl-btn rl-btn-primary" style={{width:'100%'}}>Add Wallet</button>
+                </form>
+            </div>
+        </div>
+      )}
 
       <style jsx>{`
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal {
+            background: var(--card-bg); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px;
+            border: 1px solid var(--card-border);
+        }
+        .label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
         .wallet-card {
           background: var(--card-bg);
           border: 1px solid var(--card-border);
@@ -58,12 +160,6 @@ export default function WalletsPage() {
           background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
           opacity: 0;
           transition: opacity 0.3s ease;
-        }
-
-        .wallet-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5);
-          border-color: rgba(139, 92, 246, 0.6);
         }
 
         .wallet-card:hover::before {
@@ -92,6 +188,7 @@ export default function WalletsPage() {
 
         .wallet-info {
           flex: 1;
+          overflow: hidden;
         }
 
         .wallet-name {
@@ -99,6 +196,7 @@ export default function WalletsPage() {
           font-weight: 700;
           color: var(--text);
           margin-bottom: 4px;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         .wallet-label {

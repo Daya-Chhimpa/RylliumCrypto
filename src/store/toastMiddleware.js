@@ -5,8 +5,22 @@ const toastTitles = {
   rejected: "Failed",
 };
 
+// Actions to ignore for global loader/toasts (background polling, etc)
+const ignoredActions = [
+  "auth/checkKycStatus/pending", 
+  "auth/checkKycStatus/fulfilled", 
+  "auth/checkKycStatus/rejected",
+  "ticker/fetch/pending",
+  "ticker/fetch/fulfilled",
+  "ticker/fetch/rejected"
+];
+
 export const toastMiddleware = (store) => (next) => (action) => {
   const isThunk = typeof action.type === "string" && action.type.includes("/") && (action.type.endsWith("/pending") || action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"));
+  
+  if (ignoredActions.includes(action.type)) {
+     return next(action);
+  }
 
   if (isThunk && action.type.endsWith("/pending")) {
     store.dispatch(showLoader());
@@ -27,10 +41,8 @@ export const toastMiddleware = (store) => (next) => (action) => {
       "auth/confirmEmail": "Email confirmed",
       "auth/forgotPassword": "Password reset email sent",
       "auth/resetPassword": "Password updated successfully",
-      "auth/preEnable2fa": "Scan the QR with your authenticator app",
-      "auth/enable2fa": "Two-factor authentication enabled",
-      "auth/disable2fa": "Two-factor authentication disabled",
-      "auth/twoFAStatus": "2FA status fetched",
+      "auth/startKyc": "KYC Session Started",
+      // ... add others as needed
     };
 
     let description;
