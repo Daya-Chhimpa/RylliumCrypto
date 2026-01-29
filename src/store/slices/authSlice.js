@@ -14,6 +14,14 @@ const clearAuthCookie = () => {
   }
 };
 
+export const forgotPasswordThunk = createAsyncThunk("auth/forgotPassword", async (data, { rejectWithValue }) => {
+  try {
+    return await apiRequest(endpoints.forgotPassword(), { method: "POST", body: data });
+  } catch (err) {
+    return rejectWithValue(err.message);
+  }
+});
+
 export const loginThunk = createAsyncThunk("auth/login", async (creds, { rejectWithValue }) => {
   try {
     const res = await apiRequest(endpoints.login(), { method: "POST", body: creds });
@@ -86,6 +94,9 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(forgotPasswordThunk.pending, (state) => { state.status = "loading"; state.error = null; })
+      .addCase(forgotPasswordThunk.fulfilled, (state) => { state.status = "succeeded"; })
+      .addCase(forgotPasswordThunk.rejected, (state, action) => { state.status = "failed"; state.error = action.payload; })
       .addCase(loginThunk.pending, (state) => { state.status = "loading"; state.error = null; })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.status = "succeeded";

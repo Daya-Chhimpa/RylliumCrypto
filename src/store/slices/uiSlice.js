@@ -13,11 +13,12 @@ const uiSlice = createSlice({
       state.globalLoading = action.payload;
     },
     addToast(state, action) {
-      const { type, message } = action.payload;
+      const { type, message, title, description } = action.payload;
       state.toasts.push({
         id: Date.now().toString(),
         type,
-        message,
+        title: title || (type === "error" ? "Error" : "Success"),
+        description: description || message,
       });
     },
     removeToast(state, action) {

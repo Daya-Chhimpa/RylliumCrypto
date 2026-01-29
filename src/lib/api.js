@@ -1,5 +1,5 @@
 // const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend-dev.pprince.io";
-const BASE_URL = "https://backend-dev.unduct.com";
+const BASE_URL = "https://api.unduct.com";
 
 const AUTH_TOKEN_KEY = "authToken";
 
