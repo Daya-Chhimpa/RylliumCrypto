@@ -28,6 +28,13 @@ export default function WalletsPage() {
 
   const handleCreateWallet = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!newWallet.address || newWallet.address.length < 5) {
+      dispatch(addToast({ type: "error", title: "Invalid Address", description: "Please enter a valid wallet address" }));
+      return;
+    }
+
     try {
       dispatch(showLoader());
       await createWallet(newWallet);
@@ -48,6 +55,7 @@ export default function WalletsPage() {
     if(n.includes("btc") || n.includes("bitcoin")) return "linear-gradient(135deg, #f7931a 0%, #ff9800 100%)";
     if(n.includes("eth")) return "linear-gradient(135deg, #627eea 0%, #8b9dc3 100%)";
     if(n.includes("sol")) return "linear-gradient(135deg, #14f195 0%, #9945ff 100%)";
+    if(n.includes("usdt")) return "linear-gradient(135deg, #26A17B 0%, #009393 100%)";
     return "linear-gradient(135deg, #888 0%, #444 100%)";
   };
   
@@ -57,18 +65,24 @@ export default function WalletsPage() {
       if(n.includes("btc")) return "₿";
       if(n.includes("eth")) return "Ξ";
       if(n.includes("sol")) return "◎";
+      if(n.includes("usdt")) return "$";
       return "$";
   }
 
   return (
     <div className="rl-content">
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+      <div className="rl-header-group">
           <h1 className="rl-page-title">Your <span>wallets</span></h1>
-          <button className="rl-btn rl-btn-primary" onClick={() => setShowModal(true)}>+ Add Wallet</button>
+          <button className="rl-btn rl-btn-primary desktop-btn" onClick={() => setShowModal(true)}>+ Add Wallet</button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginTop: 20 }}>
-        {wallets.length === 0 ? <p>No wallets found.</p> : wallets.map((wallet) => (
+      <div className="wallets-grid">
+        {wallets.length === 0 ? (
+          <div className="empty-state">
+            <p>No wallets found.</p>
+            <button className="rl-btn rl-btn-primary" onClick={() => setShowModal(true)}>Create your first wallet</button>
+          </div>
+        ) : wallets.map((wallet) => (
           <div key={wallet.id || wallet._id} className="wallet-card">
             <div className="wallet-card-header">
               <div className="wallet-icon" style={{ background: getGradient(wallet.network || wallet.currency || "ETH") }}>
@@ -93,6 +107,9 @@ export default function WalletsPage() {
         ))}
       </div>
       
+      {/* Mobile Floating Action Button */}
+      <button className="rl-fab mobile-btn" onClick={() => setShowModal(true)}>+</button>
+
       {showModal && (
         <div className="modal-overlay">
             <div className="modal">
@@ -131,15 +148,60 @@ export default function WalletsPage() {
       )}
 
       <style jsx>{`
+        .rl-header-group {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+
+        .wallets-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 24px;
+        }
+
+        .empty-state {
+          grid-column: 1 / -1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 40px;
+          background: rgba(255,255,255,0.02);
+          border-radius: 20px;
+          border: 1px dashed var(--card-border);
+          gap: 16px;
+        }
+
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;
+            padding: 16px;
         }
         .modal {
             background: var(--card-bg); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px;
             border: 1px solid var(--card-border);
         }
-        .label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text); }
+        
+        .auth-input {
+            height: 44px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 0 14px;
+            width: 100%;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .auth-input:focus {
+            border-color: var(--primary);
+        }
+        option { background: var(--bg); color: var(--text); }
+
         .wallet-card {
           background: var(--card-bg);
           border: 1px solid var(--card-border);
@@ -186,25 +248,12 @@ export default function WalletsPage() {
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
-        .wallet-info {
-          flex: 1;
-          overflow: hidden;
-        }
-
+        .wallet-info { flex: 1; overflow: hidden; }
         .wallet-name {
-          font-size: 18px;
-          font-weight: 700;
-          color: var(--text);
-          margin-bottom: 4px;
+          font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px;
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-
-        .wallet-label {
-          font-size: 11px;
-          font-weight: 600;
-          color: var(--muted);
-          letter-spacing: 0.5px;
-        }
+        .wallet-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
 
         .wallet-balance {
           background: rgba(139, 92, 246, 0.15);
@@ -214,46 +263,45 @@ export default function WalletsPage() {
           margin-bottom: 20px;
         }
 
-        .wallet-amount {
-          font-size: 24px;
-          font-weight: 700;
-          color: var(--text);
-          margin-bottom: 6px;
-        }
+        .wallet-amount { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .wallet-usd { font-size: 14px; font-weight: 500; color: var(--muted); }
 
-        .wallet-usd {
-          font-size: 14px;
-          font-weight: 500;
-          color: var(--muted);
-        }
+        .wallet-actions { display: flex; gap: 12px; }
 
-        .wallet-actions {
-          display: flex;
-          gap: 12px;
-        }
+        .rl-fab { display: none; }
+        .mobile-btn { display: none; }
 
         @media (max-width: 768px) {
-          .wallet-card {
-            padding: 20px;
+          .rl-header-group {
+             flex-direction: row; 
+             flex-wrap: wrap;
+             gap: 12px;
           }
-
-          .wallet-icon {
-            width: 48px;
-            height: 48px;
-            font-size: 24px;
-          }
-
-          .wallet-name {
-            font-size: 16px;
-          }
-
-          .wallet-amount {
-            font-size: 20px;
+          .rl-page-title { font-size: 28px; }
+          .wallet-card { padding: 20px; }
+          .wallet-icon { width: 48px; height: 48px; font-size: 24px; }
+          .wallet-name { font-size: 16px; }
+          .wallet-amount { font-size: 20px; }
+          
+          .desktop-btn { display: none; }
+          .rl-fab {
+            display: grid;
+            place-items: center;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
+            border: none;
+            z-index: 100;
           }
         }
       `}</style>
     </div>
   );
 }
-
-
