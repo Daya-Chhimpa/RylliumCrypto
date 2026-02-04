@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginThunk } from "@/store/slices/authSlice";
+import { addToast } from "@/store/slices/uiSlice";
 
 function SignInContent() {
   const router = useRouter();
@@ -35,6 +36,12 @@ function SignInContent() {
     if (res.meta.requestStatus === "fulfilled") {
       const next = searchParams.get("next");
       router.push(next || "/dashboard");
+    } else {
+        dispatch(addToast({
+            type: "error",
+            title: "Login Failed",
+            description: res.payload || "Invalid credentials or access denied."
+        }));
     }
   }
   return (

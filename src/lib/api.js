@@ -80,6 +80,12 @@ export const endpoints = {
   getVerificationStatus: () => "/user/verification-status",
   kycStatus: () => "/api/kyc/kycStatus",
   startKyc: () => "/api/kyc/startKyc",
+
+  // 2FA
+  getTwoFaStatus: (userId) => `/users/getTwoFaStatus/${userId}`,
+  enableTwoFa: () => "/users/twofa/enable",
+  verifyTwoFa: () => "/users/twofa/verify",
+  disableTwoFaSimple: () => "/users/disableTwoFaSimple",
 };
 
 

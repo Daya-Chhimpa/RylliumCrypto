@@ -34,6 +34,12 @@ export const loginThunk = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const resp = await apiRequest(endpoints.login(), { method: "POST", body: payload });
+      
+      // Check for user role
+      if (resp?.user?.user_role && resp.user.user_role !== 'user') {
+          return rejectWithValue("Access denied: Only users can login.");
+      }
+
       const token = resp?.token || resp?.accessToken || resp?.data?.token;
       if (resp?.requires2FA && !token) {
         return rejectWithValue(resp?.message || "2FA code required");
