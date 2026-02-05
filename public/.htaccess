@@ -1,0 +1,35 @@
+# Next.js Static Export .htaccess
+# Created by Antigravity
+
+# 1. Custom 404 Page
+ErrorDocument 404 /404.html
+
+# 2. Disable Directory Listing
+Options -Indexes
+
+# 3. Enable GZIP Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+# 4. Cache Control Headers
+<IfModule mod_headers.c>
+  # HTML files: Do particular caching (revalidate each time to see new deployed versions)
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+  </FilesMatch>
+
+  # Static Assets (JS, CSS, Images, Fonts): Cache for 1 year
+  # Next.js hashed files are safe to cache forever
+  <FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|webp)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# 5. Optional: Force HTTPS (Uncomment if needed)
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
