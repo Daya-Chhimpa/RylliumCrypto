@@ -1,11 +1,24 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { checkKycStatusThunk } from "@/store/slices/authSlice"; 
+import { addToast } from "@/store/slices/uiSlice";
 
 const FIAT_OPTIONS = ["USD", "EUR", "GBP", "INR"];
 const CRYPTO_OPTIONS = ["BTC", "ETH", "SOL", "USDT"];
 
-export default function ExchangeForm() {
+export default function ExchangeForm({ onBuy }) {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  
+  // Use local state or from user if available
+  const kycStatus = user?.kycStatus;
+
+  useEffect(() => {
+    dispatch(checkKycStatusThunk());
+  }, [dispatch]);
+
   const [fiatAmount, setFiatAmount] = useState(0);
   const [fiat, setFiat] = useState("USD");
   const [crypto, setCrypto] = useState("BTC");
@@ -33,6 +46,43 @@ export default function ExchangeForm() {
     const amt = Number(fiatAmount) || 0;
     return amt <= 0 || price <= 0 ? 0 : amt / price;
   }, [fiatAmount, price]);
+
+  const handleBuy = () => {
+    // Check KYC
+    const statusSafe = typeof kycStatus === "string" ? kycStatus.toLowerCase() : "";
+    // Note: In real app, "approved" or similar. For demo/unverified, we might block.
+    // However, if user is testing, we might want to allow provided they know.
+    // Let"s strict check if context implies strictness, or loose for demo.
+    // The user"s guide used: if (statusSafe !== "approved")
+    
+    // For now, let"s use valid check, but log it.
+    // If NO User, maybe just proceed for UI demo if that"s the intent? 
+    // User instruction: "Dashboard KYC Status Integration... if approved... else error"
+    // So stick to that.
+    
+    if (statusSafe !== "approved") {
+        dispatch(addToast({
+            type: "error",
+            title: "Authentication Required",
+            description: "Please complete your KYC verification first."
+        }));
+        return;
+    }
+
+    if (!fiatAmount || Number(fiatAmount) <= 0) {
+        dispatch(addToast({ type: "error", title: "Invalid Amount", description: "Please enter an amount." }));
+        return;
+    }
+
+    if (onBuy) {
+        onBuy({
+            fiatAmount,
+            fiatCurrency: fiat,
+            cryptoAmount: cryptoAmount.toFixed(8),
+            cryptoCurrency: crypto
+        });
+    }
+  };
 
   return (
     <section className="rl-exchange">
@@ -67,7 +117,7 @@ export default function ExchangeForm() {
           <label className="rl-label">CRYPTO:</label>
           <div className="rl-input-group">
             <input
-              type="number"
+              type="text"
               className="rl-input"
               value={cryptoAmount.toFixed(8)}
               readOnly
@@ -83,7 +133,7 @@ export default function ExchangeForm() {
             </select>
           </div>
         </div>
-        <button className="rl-btn rl-btn-primary rl-buy">Buy crypto</button>
+        <button className="rl-btn rl-btn-primary rl-buy" onClick={handleBuy}>Buy crypto</button>
       </div>
       <p className="rl-rate">
         Exchange Rate: 1 {crypto} ≈ {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiat}

@@ -1,5 +1,5 @@
 // src/lib/api.js
-export const BASE_URL = "https://api.satorem.com"; // Updated to new Gravity Base URL
+export const BASE_URL = "https://api.satorem.com"; // Hardcoded for simplicity
 
 const AUTH_TOKEN_KEY = "authToken";
 

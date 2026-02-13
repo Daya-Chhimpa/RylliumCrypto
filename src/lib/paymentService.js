@@ -1,24 +1,59 @@
-import { BASE_URL, getAuthToken, apiRequest } from "./api";
+import { BASE_URL, getAuthToken } from "./api"; 
 
 export const paymentService = {
   async preAuthorize(paymentData) {
-    // POST /payments/pre-authorize
-    return apiRequest("/payments/pre-authorize", {
+    const token = getAuthToken();
+    const response = await fetch(`${BASE_URL}/payments/pre-authorize`, {
       method: "POST",
-      body: paymentData
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` 
+      },
+      body: JSON.stringify(paymentData),
     });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: "Pre-authorization failed" }));
+      throw new Error(err.message || "Pre-authorization failed");
+    }
+    return await response.json(); // Returns { paymentId: "..." }
   },
-  async capture(paymentId, captureData) {
-    // POST /payments/capture/{paymentId}
-    return apiRequest(`/payments/capture/${paymentId}`, {
+
+  async capture(paymentId, captureData = {}) {
+    const token = getAuthToken();
+    const response = await fetch(`${BASE_URL}/payments/capture/${paymentId}`, {
       method: "POST",
-      body: captureData
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` 
+      },
+      body: JSON.stringify(captureData),
     });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: "Capture failed" }));
+      throw new Error(err.message || "Capture failed");
+    }
+    return await response.json(); // Returns { status: "captured" }
   },
-  async getPaymentHistory() {
-    // POST /payments/history
-    return apiRequest("/payments/history", {
-      method: "POST"
+  
+  // Final step to actually credit the user"s wallet
+  async initiateTransfer(transferData) {
+    const token = getAuthToken();
+    const response = await fetch(`${BASE_URL}/v1/transfers`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` 
+      },
+      // Body example: { amount: "0.0012", currency: "BTC" }
+      body: JSON.stringify(transferData),
     });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: "Transfer failed" }));
+      throw new Error(err.message || "Transfer failed");
+    }
+    return await response.json();
   }
 };
