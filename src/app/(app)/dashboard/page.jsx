@@ -57,7 +57,7 @@ export default function DashboardHome() {
       )}
 
       {step === "payment" && txnData && (
-        <div className="animate-fade-in">
+        <div className="animate-slide-up">
           <button 
              onClick={() => setStep("exchange")} 
              className="rl-btn rl-btn-secondary" 

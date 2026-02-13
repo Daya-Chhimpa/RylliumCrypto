@@ -72,62 +72,70 @@ export default function CardPaymentForm(props) {
     <div style={{ maxWidth: "600px", margin: "0 auto" }}>
       <VisualCreditCard cardNumber={cardNumber} holderName={holderName} expiry={expiry} cardType={cardType} />
       
-      <form onSubmit={handleSubmit} className="rl-form">
-        <div className="rl-input-group" style={{ marginBottom: "1rem" }}>
+      <form onSubmit={handleSubmit} className="rl-form" style={{ marginTop: "2rem" }}>
+        <div className="rl-form-group">
             <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>Card Number</label>
-            <input 
-                type="text" 
-                className="rl-input" 
-                placeholder="0000 0000 0000 0000"
-                value={cardNumber}
-                onChange={handleCardNumberChange}
-                maxLength={16}
-            />
-        </div>
-
-        <div className="rl-input-group" style={{ marginBottom: "1rem" }}>
-            <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>Card Holder</label>
-            <input 
-                type="text" 
-                className="rl-input" 
-                placeholder="YOUR NAME"
-                value={holderName}
-                onChange={(e) => setHolderName(e.target.value.toUpperCase())}
-            />
-        </div>
-
-        <div className="rl-row" style={{ display: "flex", gap: "1rem" }}>
-            <div className="rl-col" style={{ flex: 1 }}>
-                <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>Expiry (MM/YY)</label>
+            <div className="rl-form-control">
                 <input 
                     type="text" 
                     className="rl-input" 
-                    placeholder="MM/YY"
-                    value={expiry}
-                    onChange={handleExpiryChange}
-                    maxLength={5}
-                />
-            </div>
-            <div className="rl-col" style={{ flex: 1 }}>
-                <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>CVV</label>
-                <input 
-                    type="password" 
-                    className="rl-input" 
-                    placeholder="123"
-                    value={cvv}
-                    onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                    maxLength={4}
+                    placeholder="0000 0000 0000 0000"
+                    value={cardNumber}
+                    onChange={handleCardNumberChange}
+                    maxLength={16}
                 />
             </div>
         </div>
 
-        <div style={{ marginTop: "1.5rem" }}>
-            <button type="submit" className="rl-btn rl-btn-primary" style={{ width: "100%" }} disabled={loading}>
+        <div className="rl-form-group">
+            <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>Card Holder</label>
+            <div className="rl-form-control">
+                <input 
+                    type="text" 
+                    className="rl-input" 
+                    placeholder="YOUR NAME"
+                    value={holderName}
+                    onChange={(e) => setHolderName(e.target.value.toUpperCase())}
+                />
+            </div>
+        </div>
+
+        <div className="rl-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="rl-form-group">
+                <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>Expiry (MM/YY)</label>
+                <div className="rl-form-control">
+                    <input 
+                        type="text" 
+                        className="rl-input" 
+                        placeholder="MM/YY"
+                        value={expiry}
+                        onChange={handleExpiryChange}
+                        maxLength={5}
+                    />
+                </div>
+            </div>
+            <div className="rl-form-group">
+                <label className="rl-label" style={{ display: "block", marginBottom: "0.5rem" }}>CVV</label>
+                <div className="rl-form-control">
+                    <input 
+                        type="password" 
+                        className="rl-input" 
+                        placeholder="123"
+                        value={cvv}
+                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                        maxLength={4}
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div style={{ marginTop: "2rem" }}>
+            <button type="submit" className="rl-btn rl-btn-primary" style={{ width: "100%", height: "48px", fontSize: "16px" }} disabled={loading}>
             {loading ? "Processing..." : `Pay ${props.amount} ${props.currency}`}
             </button>
         </div>
         
-        {error && <div style={{ color: "#ff4444", marginTop: "1rem", textAlign: "center" }}>{typeof error === "string" ? error : JSON.stringify(error)}</div>}
+        {error && <div style={{ color: "#ef4444", marginTop: "1rem", textAlign: "center", background: "rgba(239, 68, 68, 0.1)", padding: "10px", borderRadius: "8px" }}>{typeof error === "string" ? error : JSON.stringify(error)}</div>}
       </form>
     </div>
   );
