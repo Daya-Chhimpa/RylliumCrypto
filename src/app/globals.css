@@ -26,8 +26,8 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden; /* avoid horizontal scroll */
-  overflow-y: auto;   /* allow vertical scroll on auth and small screens */
+  overflow: hidden; /* Prevent double scrollbars; handled by .rl-main */
+  height: 100%;
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -8,275 +8,47 @@ import { loginThunk, sendLoginOtpThunk, verifyTwoFaThunk, clearTwoFa } from "@/s
 
 // ── Hero panel ──
 function AuthHero() {
-  const [card, setCard] = useState({ number:"", name:"", expiry:"", cvv:"" });
-  const [ship, setShip] = useState({ fname:"", addr:"", city:"", zip:"" });
-  const [success, setSuccess] = useState(false);
-
-  const cardDone = card.number.replace(/\s/g,"").length===16 && card.name.trim() && card.expiry.length===5 && card.cvv.length===3;
-  const shipDone = ship.fname.trim() && ship.addr.trim() && ship.city.trim() && ship.zip.trim();
-
-  function handleCard(e) {
-    let val = e.target.value;
-    if (e.target.name==="number") val = val.replace(/\D/g,"").slice(0,16).replace(/(.{4})/g,"$1 ").trim();
-    if (e.target.name==="expiry") { val=val.replace(/\D/g,"").slice(0,4); if(val.length>2) val=val.slice(0,2)+"/"+val.slice(2); }
-    if (e.target.name==="cvv") val=val.replace(/\D/g,"").slice(0,3);
-    setCard({...card, [e.target.name]: val});
-  }
-
-  function handleShip(e) {
-    const v = {...ship, [e.target.name]: e.target.value};
-    setShip(v);
-    if (cardDone && v.fname.trim() && v.addr.trim() && v.city.trim() && v.zip.trim()) {
-      setTimeout(() => {
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-          setCard({ number:"", name:"", expiry:"", cvv:"" });
-          setShip({ fname:"", addr:"", city:"", zip:"" });
-        }, 2800);
-      }, 400);
-    }
-  }
-
-  const inp = (disabled) => ({
-    width:"100%", height:40, borderRadius:8,
-    background: disabled ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)",
-    border: disabled ? "1.5px solid rgba(255,255,255,0.05)" : "1.5px solid rgba(139,92,246,0.22)",
-    padding:"0 12px", color: disabled ? "#2d2d4a" : "#fff",
-    fontSize:13, outline:"none", fontFamily:"inherit", transition:"all 0.2s",
-    cursor: disabled ? "not-allowed" : "text",
-    boxSizing:"border-box",
-  });
-
-  const lbl = (disabled) => ({
-    fontSize:10, letterSpacing:"0.06em", textTransform:"uppercase",
-    color: disabled ? "#2d2d4a" : "#6b7280",
-    marginBottom:5, display:"block", fontWeight:600,
-  });
-
   return (
     <div style={{
-      height:"100%", minHeight:"100vh",
-      background:"linear-gradient(135deg,rgba(139,92,246,0.08) 0%,#0a0a1a 100%)",
+      height:"100%", width:"100%",
+      background:"linear-gradient(135deg,rgba(139,92,246,0.15) 0%,#0a0a1a 100%)",
       display:"flex", alignItems:"center", justifyContent:"center",
-      padding:"24px 20px",
+      padding:"40px", position:"relative", overflow:"hidden"
     }}>
-      <style>{`
-        .co2:focus { border-color:#8b5cf6 !important; box-shadow:0 0 0 3px rgba(139,92,246,0.18) !important; }
-        .co2::placeholder { color:#2d2d4a; }
-        @keyframes successPop { 0%{transform:scale(0.6);opacity:0} 60%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
-        @keyframes fadeSlide { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        .co-anim { animation: fadeSlide 0.3s ease both; }
-      `}</style>
+      {/* Decorative Orbs */}
+      <div style={{ position:"absolute", top:"-10%", right:"-10%", width:"300px", height:"300px", background:"rgba(139,92,246,0.05)", borderRadius:"50%", filter:"blur(80px)" }} />
+      <div style={{ position:"absolute", bottom:"-10%", left:"-10%", width:"250px", height:"250px", background:"rgba(34,197,94,0.03)", borderRadius:"50%", filter:"blur(60px)" }} />
 
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 200px", gap:16, width:"100%", maxWidth:680, alignItems:"start" }}>
-
-        {/* ── LEFT: Checkout Form ── */}
-        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          <div>
-            <div style={{ fontSize:18, fontWeight:800, color:"#fff", marginBottom:3 }}>Checkout</div>
-            <div style={{ fontSize:12, color:"#4b5563" }}>Secure pre-authorization for your crypto purchase.</div>
-          </div>
-
-          {/* SUCCESS */}
-          {success && (
-            <div className="co-anim" style={{
-              background:"rgba(20,20,42,0.95)", border:"1px solid rgba(34,197,94,0.3)",
-              borderRadius:14, padding:"32px 20px", textAlign:"center",
-            }}>
-              <div style={{
-                width:56, height:56, borderRadius:"50%", margin:"0 auto 14px",
-                background:"linear-gradient(135deg,#22c55e,#16a34a)",
-                display:"grid", placeItems:"center",
-                boxShadow:"0 0 28px rgba(34,197,94,0.4)",
-                animation:"successPop 0.5s ease both",
-              }}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-              </div>
-              <div style={{ fontSize:16, fontWeight:800, color:"#fff", marginBottom:5 }}>Payment Submitted!</div>
-              <div style={{ fontSize:12, color:"#6b7280" }}>Your transaction is being processed securely.</div>
-            </div>
-          )}
-
-          {!success && (<>
-            {/* Card Information */}
-            <div style={{
-              background:"rgba(20,20,42,0.9)", border:"1px solid rgba(139,92,246,0.22)",
-              borderRadius:14, padding:"16px 18px",
-            }}>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
-                <span style={{ fontSize:14, fontWeight:700, color:"#fff" }}>Card Information</span>
-                <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-                  <svg width="30" height="20" viewBox="0 0 38 24"><rect width="38" height="24" rx="3" fill="#1e3a8a"/><text x="6" y="17" fill="#fff" fontSize="12" fontWeight="900" fontFamily="Arial">VISA</text></svg>
-                  <svg width="30" height="20" viewBox="0 0 38 24"><rect width="38" height="24" rx="3" fill="#1a1a2e"/><circle cx="15" cy="12" r="8" fill="#eb001b" opacity="0.85"/><circle cx="23" cy="12" r="8" fill="#f79e1b" opacity="0.85"/><circle cx="19" cy="12" r="4.5" fill="#ff5f00" opacity="0.75"/></svg>
-                </div>
-              </div>
-              <div style={{ display:"grid", gap:10 }}>
-                <div>
-                  <label style={lbl(false)}>Card Number</label>
-                  <input className="co2" style={inp(false)} name="number" value={card.number} onChange={handleCard} placeholder="0000 0000 0000 0000" maxLength={19}/>
-                </div>
-                <div>
-                  <label style={lbl(false)}>Cardholder Name</label>
-                  <input className="co2" style={inp(false)} name="name" value={card.name} onChange={handleCard} placeholder="FULL NAME"/>
-                </div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-                  <div>
-                    <label style={lbl(false)}>Expiry (MM/YY)</label>
-                    <input className="co2" style={inp(false)} name="expiry" value={card.expiry} onChange={handleCard} placeholder="MM/YY" maxLength={5}/>
-                  </div>
-                  <div>
-                    <label style={lbl(false)}>CVV</label>
-                    <input className="co2" style={{...inp(false), letterSpacing:card.cvv?4:0}} name="cvv" value={card.cvv} onChange={handleCard} placeholder="···" maxLength={3}/>
-                  </div>
-                </div>
-                {cardDone && <div style={{ fontSize:11, color:"#22c55e", textAlign:"center", fontWeight:600 }}>✓ Card verified — fill shipping to continue</div>}
-              </div>
-            </div>
-
-            {/* Shipping Address */}
-            <div style={{
-              background: cardDone ? "rgba(20,20,42,0.9)" : "rgba(15,15,30,0.55)",
-              border: `1px solid ${cardDone ? "rgba(139,92,246,0.22)" : "rgba(139,92,246,0.07)"}`,
-              borderRadius:14, padding:"16px 18px",
-              opacity: cardDone ? 1 : 0.5,
-              transition:"all 0.3s",
-            }}>
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                <span style={{ fontSize:14, fontWeight:700, color: cardDone?"#fff":"#374151" }}>Shipping Address</span>
-                {!cardDone && <span style={{ fontSize:10, color:"#374151", background:"rgba(139,92,246,0.08)", padding:"2px 8px", borderRadius:20, fontWeight:600 }}>Complete card info first</span>}
-              </div>
-              <div style={{ display:"grid", gap:10 }}>
-                <div>
-                  <label style={lbl(!cardDone)}>Full Name</label>
-                  <input className={cardDone?"co2":""} style={inp(!cardDone)} name="fname" value={ship.fname} onChange={handleShip} placeholder="James Wilson" disabled={!cardDone}/>
-                </div>
-                <div>
-                  <label style={lbl(!cardDone)}>Address Line 1</label>
-                  <input className={cardDone?"co2":""} style={inp(!cardDone)} name="addr" value={ship.addr} onChange={handleShip} placeholder="10 Downing Street" disabled={!cardDone}/>
-                </div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-                  <div>
-                    <label style={lbl(!cardDone)}>City</label>
-                    <input className={cardDone?"co2":""} style={inp(!cardDone)} name="city" value={ship.city} onChange={handleShip} placeholder="London" disabled={!cardDone}/>
-                  </div>
-                  <div>
-                    <label style={lbl(!cardDone)}>Postal Code</label>
-                    <input className={cardDone?"co2":""} style={inp(!cardDone)} name="zip" value={ship.zip} onChange={handleShip} placeholder="SW1A 1AA" disabled={!cardDone}/>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Pay Button */}
-            <div style={{
-              height:44, borderRadius:12, display:"grid", placeItems:"center",
-              background: cardDone && shipDone ? "linear-gradient(135deg,#8b5cf6,#7c3aed)" : "#0f0f1e",
-              color: cardDone && shipDone ? "#fff" : "#2d2d4a",
-              fontWeight:700, fontSize:14,
-              border: `1px solid ${cardDone && shipDone ? "rgba(139,92,246,0.5)" : "rgba(255,255,255,0.04)"}`,
-              cursor: cardDone && shipDone ? "pointer" : "default",
-              transition:"all 0.3s",
-              boxShadow: cardDone && shipDone ? "0 4px 20px rgba(139,92,246,0.35)" : "none",
-            }}>
-              Pay EUR 1
-            </div>
-          </>)}
+      <div style={{ position:"relative", zIndex:2, maxWidth:"420px", textAlign:"center" }}>
+        <div style={{ 
+          width:80, height:80, borderRadius:24, background:"rgba(139,92,246,0.1)", border:"1px solid rgba(139,92,246,0.2)",
+          display:"grid", placeItems:"center", margin:"0 auto 32px",
+          boxShadow:"0 20px 40px rgba(0,0,0,0.3)"
+        }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
         </div>
+        
+        <h2 style={{ fontSize:28, fontWeight:800, color:"#fff", marginBottom:16, letterSpacing:"-0.02em" }}>Secure Access</h2>
+        <p style={{ fontSize:15, color:"#9ca3af", lineHeight:1.7, marginBottom:40 }}>
+          Your security is our top priority. We use military-grade encryption and two-factor authentication to keep your assets safe.
+        </p>
 
-        {/* ── RIGHT: Order Summary + Payment Badges ── */}
-        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-
-          {/* Order Summary — dark card */}
-          <div style={{
-            background:"#111118",
-            border:"1px solid rgba(255,255,255,0.07)",
-            borderRadius:20, padding:"20px 18px",
-            boxShadow:"0 8px 32px rgba(0,0,0,0.4)",
-          }}>
-            <div style={{ fontSize:14, fontWeight:800, color:"#fff", marginBottom:18 }}>Order Summary</div>
-
-            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20 }}>
-              <div style={{
-                width:40, height:40, borderRadius:12, flexShrink:0,
-                background:"linear-gradient(135deg,#f59332,#e07000)",
-                display:"flex", alignItems:"center", justifyContent:"center",
-                fontWeight:900, fontSize:18, color:"#fff",
-                boxShadow:"0 4px 12px rgba(245,147,50,0.4)",
-              }}>B</div>
+        <div style={{ display:"grid", gap:16, textAlign:"left" }}>
+          {[
+            { t: "Institutional Grade Security", d: "Protected by multi-sig vaults and cold storage." },
+            { t: "256-bit Encryption", d: "End-to-end encryption for all your transactions." },
+            { t: "Instant Notifications", d: "Get alerts for every login and trade activity." }
+          ].map((item, i) => (
+            <div key={i} style={{ display:"flex", gap:14, padding:"16px", background:"rgba(255,255,255,0.03)", borderRadius:16, border:"1px solid rgba(255,255,255,0.05)" }}>
+              <div style={{ width:8, height:8, borderRadius:"50%", background:"#8b5cf6", marginTop:6, flexShrink:0 }} />
               <div>
-                <div style={{ fontSize:11, color:"#6b7280", marginBottom:3 }}>Receiving</div>
-                <div style={{ fontSize:14, fontWeight:800, color:"#fff" }}>0.00001703 BTC</div>
+                <div style={{ fontSize:14, fontWeight:700, color:"#fff", marginBottom:2 }}>{item.t}</div>
+                <div style={{ fontSize:12, color:"#6b7280" }}>{item.d}</div>
               </div>
             </div>
-
-            <div style={{ display:"grid", gap:12, marginBottom:16 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <span style={{ fontSize:12, color:"#6b7280" }}>Exchange Rate</span>
-                <span style={{ fontSize:11, color:"#9ca3af", fontWeight:600 }}>1 BTC ≈ EUR 65,000</span>
-              </div>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <span style={{ fontSize:12, color:"#6b7280" }}>Network</span>
-                <span style={{ fontSize:12, color:"#9ca3af", fontWeight:600 }}>BTC</span>
-              </div>
-            </div>
-
-            <div style={{ borderTop:"1px solid rgba(255,255,255,0.06)", paddingTop:14, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-              <span style={{ fontSize:12, color:"#6b7280" }}>Total Due</span>
-              <span style={{ fontSize:26, fontWeight:900, color:"#fff", letterSpacing:-1 }}>EUR 1</span>
-            </div>
-          </div>
-
-          {/* Payment Badges — white card */}
-          <div style={{
-            background:"#ffffff",
-            borderRadius:16, padding:"16px 14px",
-            boxShadow:"0 4px 20px rgba(0,0,0,0.3)",
-          }}>
-            {/* Logos row */}
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-around", marginBottom:14 }}>
-
-              {/* Mastercard */}
-              <svg width="40" height="28" viewBox="0 0 40 28" fill="none">
-                <circle cx="15" cy="14" r="11" fill="#EB001B"/>
-                <circle cx="25" cy="14" r="11" fill="#F79E1B"/>
-                <path d="M20 6.5a11 11 0 0 1 0 15A11 11 0 0 1 20 6.5z" fill="#FF5F00"/>
-              </svg>
-
-              {/* VISA */}
-              <span style={{ fontWeight:900, fontSize:17, color:"#1434CB", fontStyle:"italic", letterSpacing:-0.5 }}>VISA</span>
-
-              {/* Google Pay */}
-              <div style={{ display:"flex", alignItems:"center", gap:2 }}>
-                <svg width="15" height="15" viewBox="0 0 24 24">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                <span style={{ fontWeight:600, fontSize:12, color:"#202124" }}>Pay</span>
-              </div>
-
-              {/* Apple Pay */}
-              <div style={{ display:"flex", alignItems:"center", gap:2 }}>
-                <svg width="13" height="16" viewBox="0 0 14 17" fill="#000000">
-                  <path d="M11.76 8.9c-.02-1.96 1.6-2.9 1.67-2.95-.91-1.33-2.33-1.51-2.84-1.53-1.2-.12-2.36.71-2.97.71-.62 0-1.56-.7-2.57-.68-1.31.02-2.53.77-3.2 1.94-1.38 2.38-.35 5.89.97 7.82.66.94 1.43 1.99 2.45 1.95.99-.04 1.36-.63 2.56-.63 1.19 0 1.53.63 2.57.61 1.06-.02 1.72-.95 2.37-1.9.75-1.08 1.06-2.14 1.07-2.19-.02-.01-2.06-.79-2.08-3.15zM9.8 2.9c.54-.66.92-1.58.82-2.52-.82.04-1.8.56-2.35 1.21-.5.58-.94 1.52-.82 2.42.91.07 1.85-.46 2.35-1.11z"/>
-                </svg>
-                <span style={{ fontWeight:600, fontSize:12, color:"#000000" }}>Pay</span>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            <div style={{ fontSize:9, color:"#9ca3af", lineHeight:1.5, marginBottom:12 }}>
-              Cardholders are responsible for retaining transaction records and complying with all local laws and regulatory requirements related to virtual currency transactions.
-            </div>
-
-            {/* SSL */}
-            <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span style={{ fontSize:11, color:"#22c55e", fontWeight:700 }}>SSL Encrypted &amp; Secure</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
@@ -406,7 +178,7 @@ function SignInContent() {
 
   const sideStyle = {
     background: "#141428",
-    padding: "40px 44px",
+    padding: "32px 36px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -419,7 +191,7 @@ function SignInContent() {
     height: "100vh",
     overflow: "hidden",
     display: "grid",
-    gridTemplateColumns: "480px 1fr",
+    gridTemplateColumns: "420px 1fr",
     background: "#0a0a1a",
   };
 

@@ -29,11 +29,16 @@ export const metadata = {
   },
 };
 
+import Toaster from "@/components/Toaster";
+import LoaderOverlay from "@/components/LoaderOverlay";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
+          <Toaster />
+          <LoaderOverlay />
           <GlobalErrorListener />
           <AuthCookieSync />
           {children}

@@ -8,9 +8,11 @@ export default function SettingsPage() {
     <div className="rl-content">
       <h1 className="rl-page-title">Settings</h1>
 
-      <div className="settings-container">
+      <div className="settings-container animate-fade-in">
         <TwoFactorAuth />
         
+        <div style={{ height: 12 }} />
+
         <section className="verification-card">
           <div className="verification-header">
             <div className="icon-badge">
@@ -41,12 +43,12 @@ export default function SettingsPage() {
         .verification-card {
           background: var(--card-bg);
           border: 1px solid var(--card-border);
-          border-radius: 16px;
+          border-radius: 20px;
           overflow: hidden;
           box-shadow: var(--shadow-1);
         }
         .verification-header {
-          padding: 32px;
+          padding: 24px 32px;
           border-bottom: 1px solid var(--card-border);
           display: flex;
           gap: 20px;
@@ -54,24 +56,24 @@ export default function SettingsPage() {
           background: linear-gradient(180deg, var(--bg-soft) 0%, rgba(255,255,255,0) 100%);
         }
         .icon-badge {
-          width: 48px;
-          height: 48px;
+          width: 44px;
+          height: 44px;
           border-radius: 12px;
           background: rgba(255, 149, 0, 0.1);
-          color: var(--primary);
+          color: #f59e0b;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
         }
         .verification-header h2 {
-          font-size: 20px;
-          font-weight: 600;
-          color: var(--text);
-          margin: 0 0 8px 0;
+          font-size: 19px;
+          font-weight: 700;
+          color: #fff;
+          margin: 0 0 4px 0;
         }
         .verification-header p {
-          font-size: 14px;
+          font-size: 13px;
           color: var(--muted);
           margin: 0;
           line-height: 1.5;
@@ -79,13 +81,8 @@ export default function SettingsPage() {
         .verification-body {
           padding: 32px;
           min-height: 200px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
         }
       `}</style>
     </div>
   );
 }
-
-
