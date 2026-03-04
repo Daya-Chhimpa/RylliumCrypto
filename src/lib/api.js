@@ -1,5 +1,5 @@
 // src/lib/api.js
-export const BASE_URL = "https://api.satorem.com"; // Hardcoded for simplicity
+export const BASE_URL = "https://api.alpacross.com"; // Hardcoded for simplicity
 
 const AUTH_TOKEN_KEY = "authToken";
 
@@ -72,6 +72,8 @@ export const endpoints = {
   register: () => "/users/register",
   confirmEmail: () => "/auth/verify_email",
   login: () => "/users/login",
+  sendLoginOtp: () => "/users/sendLoginOtp",   // NEW: send OTP for 2FA login
+  loginTwoFa: () => "/users/2falogin",          // NEW: verify 2FA code during login
   forgotPassword: () => "/auth/forgot_password",
   forgotPassword2: () => "/auth/update_password",
   
@@ -81,12 +83,37 @@ export const endpoints = {
   kycStatus: () => "/api/kyc/kycStatus",
   startKyc: () => "/api/kyc/startKyc",
 
-  // 2FA
+  // 2FA Settings
   getTwoFaStatus: (userId) => `/users/getTwoFaStatus/${userId}`,
   enableTwoFa: () => "/users/twofa/enable",
   verifyTwoFa: () => "/users/twofa/verify",
   disableTwoFaSimple: () => "/users/disableTwoFaSimple",
 };
+
+// JWT decode (client-side only, no signature verification)
+function safeBase64UrlToJson(base64Url) {
+  try {
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+    const jsonStr = decodeURIComponent(
+      Array.prototype.map.call(atob(padded), (c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")
+    );
+    return JSON.parse(jsonStr);
+  } catch { return null; }
+}
+
+export function decodeJwtPayload(token) {
+  try {
+    if (!token) return null;
+    const parts = token.split(".");
+    if (parts.length < 2) return null;
+    return safeBase64UrlToJson(parts[1]);
+  } catch { return null; }
+}
+
+export function getTokenPayload() {
+  return decodeJwtPayload(getAuthToken());
+}
 
 
 

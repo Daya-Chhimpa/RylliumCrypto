@@ -12,7 +12,14 @@ const ignoredActions = [
   "auth/checkKycStatus/rejected",
   "ticker/fetch/pending",
   "ticker/fetch/fulfilled",
-  "ticker/fetch/rejected"
+  "ticker/fetch/rejected",
+  // NEW: payment history is a background refresh, no toast needed
+  "payment/fetchHistory/pending",
+  "payment/fetchHistory/fulfilled",
+  "payment/fetchHistory/rejected",
+  // NEW: sendLoginOtp — silent, OTP sent message handled in component
+  "auth/sendLoginOtp/pending",
+  "auth/sendLoginOtp/fulfilled",
 ];
 
 export const toastMiddleware = (store) => (next) => (action) => {
@@ -54,6 +61,11 @@ export const toastMiddleware = (store) => (next) => (action) => {
       }
     } else {
       description = action.payload || action.error?.message || action.meta?.arg?.message || "Request failed";
+    }
+
+    // NEW: Skip success toast for login when 2FA is required (not a complete login yet)
+    if (baseType === "auth/login" && phase === "fulfilled" && action.payload?.requiresTwoFa) {
+      return result;
     }
 
     store.dispatch(addToast({ type, title, description }));

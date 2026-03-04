@@ -1,46 +1,49 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { checkKycStatusThunk } from "@/store/slices/authSlice"; 
+import { useDispatch } from "react-redux";
 import { addToast } from "@/store/slices/uiSlice";
 
 const FIAT_OPTIONS = ["USD", "EUR", "GBP", "INR"];
 const CRYPTO_OPTIONS = ["BTC", "ETH", "SOL", "USDT"];
 
+// Fetch live prices from CoinGecko (free, no key needed)
+async function fetchLivePrices() {
+  try {
+    const ids = "bitcoin,ethereum,solana,tether";
+    const vs = "usd,eur,gbp,inr";
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=${vs}`,
+      { cache: "no-store" }
+    );
+    const data = await res.json();
+    return {
+      BTC:  { USD: data.bitcoin?.usd,  EUR: data.bitcoin?.eur,  GBP: data.bitcoin?.gbp,  INR: data.bitcoin?.inr },
+      ETH:  { USD: data.ethereum?.usd, EUR: data.ethereum?.eur, GBP: data.ethereum?.gbp, INR: data.ethereum?.inr },
+      SOL:  { USD: data.solana?.usd,   EUR: data.solana?.eur,   GBP: data.solana?.gbp,   INR: data.solana?.inr },
+      USDT: { USD: data.tether?.usd,   EUR: data.tether?.eur,   GBP: data.tether?.gbp,   INR: data.tether?.inr },
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default function ExchangeForm({ onBuy }) {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  
-  // Use local state or from user if available
-  const kycStatus = user?.kycStatus;
-
-  useEffect(() => {
-    dispatch(checkKycStatusThunk());
-  }, [dispatch]);
 
   const [fiatAmount, setFiatAmount] = useState(0);
-  const [fiat, setFiat] = useState("USD");
+  const [fiat, setFiat] = useState("EUR");
   const [crypto, setCrypto] = useState("BTC");
+  const [prices, setPrices] = useState(null);
 
-  // Fake prices for demo
-  const price = useMemo(() => {
-    const base = {
-      BTC: 111124.8,
-      ETH: 3450.25,
-      SOL: 175.4,
-      USDT: 1,
-    }[crypto];
+  // Fetch live prices on mount
+  useEffect(() => {
+    fetchLivePrices().then((data) => {
+      if (data) setPrices(data);
+    });
+  }, []);
 
-    const fx = {
-      USD: 1,
-      EUR: 0.92,
-      GBP: 0.79,
-      INR: 83,
-    }[fiat];
-
-    return base * fx;
-  }, [crypto, fiat]);
+  const price = useMemo(() => prices?.[crypto]?.[fiat] || 0, [prices, crypto, fiat]);
 
   const cryptoAmount = useMemo(() => {
     const amt = Number(fiatAmount) || 0;
@@ -48,39 +51,24 @@ export default function ExchangeForm({ onBuy }) {
   }, [fiatAmount, price]);
 
   const handleBuy = () => {
-    // Check KYC
-    const statusSafe = typeof kycStatus === "string" ? kycStatus.toLowerCase() : "";
-    // Note: In real app, "approved" or similar. For demo/unverified, we might block.
-    // However, if user is testing, we might want to allow provided they know.
-    // Let"s strict check if context implies strictness, or loose for demo.
-    // The user"s guide used: if (statusSafe !== "approved")
-    
-    // For now, let"s use valid check, but log it.
-    // If NO User, maybe just proceed for UI demo if that"s the intent? 
-    // User instruction: "Dashboard KYC Status Integration... if approved... else error"
-    // So stick to that.
-    
-    if (statusSafe !== "approved") {
-        dispatch(addToast({
-            type: "error",
-            title: "Authentication Required",
-            description: "Please complete your KYC verification first."
-        }));
-        return;
-    }
-
+    // Validate amount first
     if (!fiatAmount || Number(fiatAmount) <= 0) {
-        dispatch(addToast({ type: "error", title: "Invalid Amount", description: "Please enter an amount." }));
-        return;
+      dispatch(addToast({
+        type: "error",
+        title: "Amount Required",
+        description: "Please enter a valid amount to purchase crypto."
+      }));
+      return;
     }
 
+    // Proceed to checkout (no KYC block — bypass like PPrince)
     if (onBuy) {
-        onBuy({
-            fiatAmount,
-            fiatCurrency: fiat,
-            cryptoAmount: cryptoAmount.toFixed(8),
-            cryptoCurrency: crypto
-        });
+      onBuy({
+        fiatAmount,
+        fiatCurrency: fiat,
+        cryptoAmount: cryptoAmount.toFixed(8),
+        cryptoCurrency: crypto,
+      });
     }
   };
 
@@ -88,7 +76,7 @@ export default function ExchangeForm({ onBuy }) {
     <section className="rl-exchange">
       <div className="rl-row">
         <div className="rl-col">
-          <label className="rl-label">FIAT:</label>
+          <label className="rl-label">I PAY:</label>
           <div className="rl-input-group">
             <input
               type="number"
@@ -97,7 +85,7 @@ export default function ExchangeForm({ onBuy }) {
               className="rl-input"
               value={fiatAmount}
               onChange={(e) => setFiatAmount(e.target.value)}
-              placeholder="0.00"
+              placeholder="100.00"
             />
             <select
               className="rl-select"
@@ -110,14 +98,14 @@ export default function ExchangeForm({ onBuy }) {
             </select>
           </div>
         </div>
-        <div className="rl-arrow" aria-hidden>
-          →
-        </div>
+
+        <div className="rl-arrow" aria-hidden>→</div>
+
         <div className="rl-col">
-          <label className="rl-label">CRYPTO:</label>
+          <label className="rl-label">I GET:</label>
           <div className="rl-input-group">
             <input
-              type="text"
+              type="number"
               className="rl-input"
               value={cryptoAmount.toFixed(8)}
               readOnly
@@ -133,14 +121,19 @@ export default function ExchangeForm({ onBuy }) {
             </select>
           </div>
         </div>
-        <button className="rl-btn rl-btn-primary rl-buy" onClick={handleBuy}>Buy crypto</button>
+
+        <button className="rl-btn rl-btn-primary rl-buy" onClick={handleBuy}>
+          Buy crypto
+        </button>
       </div>
+
       <p className="rl-rate">
-        Exchange Rate: 1 {crypto} ≈ {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiat}
+        {price > 0 ? (
+          <>Exchange Rate: 1 {crypto} ≈ {price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiat}</>
+        ) : (
+          <>Loading live rates...</>
+        )}
       </p>
     </section>
   );
 }
-
-
-
