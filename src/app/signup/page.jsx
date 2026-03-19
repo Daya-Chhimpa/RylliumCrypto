@@ -89,53 +89,55 @@ function SignUpContent() {
       <link rel="stylesheet" href="/custom-style.css" />
       <div className="auth-wrap">
         <div className="auth-side">
-          <div className="auth-brand"><span className="logo">S</span><div className="Tag">Satorem</div></div>
-          <div className="auth-title">Create your account</div>
-          <p className="auth-sub">Join millions of traders on Satorem. It only takes a minute.</p>
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="name-row" style={{display:'flex', gap:8, marginBottom: 12}}>
-              <input name="firstName" className="auth-input" type="text" placeholder="First name" required style={{flex:1}} />
-              <input name="lastName" className="auth-input" type="text" placeholder="Last name" required style={{flex:1}} />
-            </div>
-            
-            <div style={{marginBottom: 12}}>
-              <label style={{fontSize: 12, color: 'var(--muted)', display: 'block', marginBottom: 4, marginLeft: 4, padding: 0}}>Date of Birth</label>
-              <div className="date-input-container" style={{position: 'relative'}}>
-                <input 
-                  name="dob" 
-                  className="auth-input" 
-                  type="date" 
-                  required 
-                  max={new Date().toISOString().split("T")[0]}
-                  onClick={(e) => {
-                    try {
-                      if (typeof e.target.showPicker === 'function') {
-                        e.target.showPicker();
-                      }
-                    } catch (err) {}
-                  }}
-                  style={{paddingRight: '40px'}}
-                />
+          <div className="auth-side-content">
+            <div className="auth-brand" style={{ marginBottom: 16 }}><span className="logo">S</span><div className="Tag">Satorem</div></div>
+            <div className="auth-title" style={{ fontSize:30, fontWeight:800, marginBottom:6 }}>Create your account</div>
+            <p className="auth-sub" style={{ fontSize: 13, color: '#9ca3af', marginBottom: 20 }}>Join millions of traders. takes a minute.</p>
+            <form className="auth-form" onSubmit={handleSubmit} style={{ gap: 10 }}>
+              <div className="name-row" style={{display:'flex', gap:8, marginBottom: 8}}>
+                <input name="firstName" className="auth-input" type="text" placeholder="First name" required style={{flex:1, height: 40}} />
+                <input name="lastName" className="auth-input" type="text" placeholder="Last name" required style={{flex:1, height: 40}} />
               </div>
-            </div>
+              
+              <div style={{marginBottom: 8}}>
+                <label style={{fontSize: 11, color: '#9ca3af', display: 'block', marginBottom: 2, marginLeft: 4}}>Date of Birth</label>
+                <div className="date-input-container" style={{position: 'relative'}}>
+                  <input 
+                    name="dob" 
+                    className="auth-input" 
+                    type="date" 
+                    required 
+                    max={new Date().toISOString().split("T")[0]}
+                    onClick={(e) => {
+                      try {
+                        if (typeof e.target.showPicker === 'function') {
+                          e.target.showPicker();
+                        }
+                      } catch (err) {}
+                    }}
+                    style={{paddingRight: '40px', height: 40}}
+                  />
+                </div>
+              </div>
 
-            <input name="email" className="auth-input" type="email" placeholder="Email" required style={{marginBottom: 12}} />
-            <input name="password" className="auth-input" type="password" placeholder="Password" required style={{marginBottom: 20}} />
-            
-            <button className="auth-btn" type="submit" disabled={authStatus === "loading"}>
-              {authStatus === "loading" ? "Creating Account..." : "Create Account"}
-            </button>
-          </form>
-          {authError && <p style={{marginTop:12, color:'#ef4444', fontSize: 13, textAlign: 'center'}}>{authError}</p>}
-          <div className="auth-alt">
-            <span>Already have an account?</span>
-            <Link href="/signin">Sign in</Link>
+              <input name="email" className="auth-input" type="email" placeholder="Email" required style={{marginBottom: 8, height: 40}} />
+              <input name="password" className="auth-input" type="password" placeholder="Password" required style={{marginBottom: 16, height: 40}} />
+              
+              <button className="auth-btn" type="submit" disabled={authStatus === "loading"} style={{ height: 42 }}>
+                {authStatus === "loading" ? "Creating Account..." : "Create Account"}
+              </button>
+            </form>
+            {authError && <p style={{marginTop:12, color:'#ef4444', fontSize: 12, textAlign: 'center'}}>{authError}</p>}
+            <div className="auth-alt" style={{ marginTop: 20, fontSize: 13 }}>
+              <span style={{ color: '#9ca3af' }}>Already have an account?</span>
+              <Link href="/signin" style={{ color: '#8b5cf6', fontWeight: 600 }}>Sign in</Link>
+            </div>
           </div>
         </div>
         <div className="auth-hero">
           <div className="auth-hero-inner">
             <div className="auth-brand" style={{justifyContent:'center'}}><span className="logo">S</span><div className="Tag">Satorem</div></div>
-            <h2>Welcome to the future of crypto</h2>
+            <h2 style={{ fontSize:48, fontWeight:800, color:"#fff", marginBottom:16 }}>Welcome to the future of crypto</h2>
             <p>Secure, fast, and intuitive. Build and grow your portfolio with confidence.</p>
           </div>
         </div>

@@ -11,45 +11,24 @@ function AuthHero() {
   return (
     <div style={{
       height:"100%", width:"100%",
-      background:"linear-gradient(135deg,rgba(139,92,246,0.15) 0%,#0a0a1a 100%)",
+      background:"linear-gradient(135deg,rgba(139,92,246,0.1) 0%,#0a0a1a 100%)",
       display:"flex", alignItems:"center", justifyContent:"center",
       padding:"40px", position:"relative", overflow:"hidden"
     }}>
       {/* Decorative Orbs */}
-      <div style={{ position:"absolute", top:"-10%", right:"-10%", width:"300px", height:"300px", background:"rgba(139,92,246,0.05)", borderRadius:"50%", filter:"blur(80px)" }} />
-      <div style={{ position:"absolute", bottom:"-10%", left:"-10%", width:"250px", height:"250px", background:"rgba(34,197,94,0.03)", borderRadius:"50%", filter:"blur(60px)" }} />
+      <div style={{ position:"absolute", top:"-10%", right:"-10%", width:"400px", height:"400px", background:"rgba(139,92,246,0.06)", borderRadius:"50%", filter:"blur(100px)" }} />
+      <div style={{ position:"absolute", bottom:"-10%", left:"-10%", width:"350px", height:"350px", background:"rgba(139,92,246,0.04)", borderRadius:"50%", filter:"blur(80px)" }} />
 
-      <div style={{ position:"relative", zIndex:2, maxWidth:"420px", textAlign:"center" }}>
-        <div style={{ 
-          width:80, height:80, borderRadius:24, background:"rgba(139,92,246,0.1)", border:"1px solid rgba(139,92,246,0.2)",
-          display:"grid", placeItems:"center", margin:"0 auto 32px",
-          boxShadow:"0 20px 40px rgba(0,0,0,0.3)"
-        }}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
+      <div style={{ position:"relative", zIndex:2, maxWidth:"520px", textAlign:"center" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginBottom:24 }}>
+          <span style={{ width:48, height:48, borderRadius:12, background:"linear-gradient(135deg,#8b5cf6,#7c3aed)", display:"grid", placeItems:"center", fontWeight:800, fontSize:24, color:"#fff", boxShadow:"0 8px 20px rgba(139,92,246,0.3)" }}>S</span>
+          <span style={{ fontSize:22, fontWeight:700, color:"#fff", letterSpacing:"1px" }}>Satorem</span>
         </div>
         
-        <h2 style={{ fontSize:28, fontWeight:800, color:"#fff", marginBottom:16, letterSpacing:"-0.02em" }}>Secure Access</h2>
-        <p style={{ fontSize:15, color:"#9ca3af", lineHeight:1.7, marginBottom:40 }}>
-          Your security is our top priority. We use military-grade encryption and two-factor authentication to keep your assets safe.
+        <h2 style={{ fontSize:48, fontWeight:800, color:"#fff", marginBottom:16, letterSpacing:"-0.02em", lineHeight:1.2 }}>Secure Access</h2>
+        <p style={{ fontSize:18, color:"#9ca3af", lineHeight:1.6 }}>
+          Your security is our top priority. We use military-grade encryption to keep your assets safe.
         </p>
-
-        <div style={{ display:"grid", gap:16, textAlign:"left" }}>
-          {[
-            { t: "Institutional Grade Security", d: "Protected by multi-sig vaults and cold storage." },
-            { t: "256-bit Encryption", d: "End-to-end encryption for all your transactions." },
-            { t: "Instant Notifications", d: "Get alerts for every login and trade activity." }
-          ].map((item, i) => (
-            <div key={i} style={{ display:"flex", gap:14, padding:"16px", background:"rgba(255,255,255,0.03)", borderRadius:16, border:"1px solid rgba(255,255,255,0.05)" }}>
-              <div style={{ width:8, height:8, borderRadius:"50%", background:"#8b5cf6", marginTop:6, flexShrink:0 }} />
-              <div>
-                <div style={{ fontSize:14, fontWeight:700, color:"#fff", marginBottom:2 }}>{item.t}</div>
-                <div style={{ fontSize:12, color:"#6b7280" }}>{item.d}</div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -188,8 +167,7 @@ function SignInContent() {
   };
 
   const wrapStyle = {
-    height: "100vh",
-    overflow: "hidden",
+    minHeight: "100vh",
     display: "grid",
     gridTemplateColumns: "420px 1fr",
     background: "#0a0a1a",
@@ -245,7 +223,7 @@ function SignInContent() {
                   ))}
                 </div>
                 <button className="auth-btn-pro" type="submit" style={{ width:"100%" }} disabled={status==="loading" || otp.join("").length!==6}>
-                  {status==="loading" ? <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ animation:"spin 0.8s linear infinite" }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Verifying...</span> : "Verify & Continue →"}
+                  {status==="loading" ? <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ animation:"spin 0.8s linear infinite" }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Verifying...</span> : "Verify & Continue"}
                 </button>
               </form>
               {isEmail && (
@@ -344,46 +322,48 @@ function SignInContent() {
       <div className="auth-layout" style={wrapStyle}>
         <div className="auth-left-panel" style={sideStyle}>
           <div className="auth-side-inner">
+          <div className="auth-side-content">
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
-              <span style={{ width:38, height:38, borderRadius:10, background:"linear-gradient(135deg,#8b5cf6,#7c3aed)", display:"grid", placeItems:"center", fontWeight:800, fontSize:18, color:"#fff", boxShadow:"0 4px 12px rgba(139,92,246,0.4)" }}>S</span>
-              <span style={{ fontSize:18, fontWeight:700 }}>Satorem</span>
+              <span style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#8b5cf6,#7c3aed)", display:"grid", placeItems:"center", fontWeight:800, fontSize:16, color:"#fff", boxShadow:"0 4px 12px rgba(139,92,246,0.4)" }}>S</span>
+              <span style={{ fontSize:16, fontWeight:700 }}>Satorem</span>
             </div>
-            <div style={{ fontSize:28, fontWeight:800, color:"#fff", marginBottom:6 }}>Welcome back</div>
-            <p style={{ color:"#9ca3af", fontSize:14, marginBottom:28, lineHeight:1.6 }}>Sign in to your Satorem account to continue trading.</p>
-            <form style={{ display:"grid", gap:14 }} onSubmit={handleSubmit}>
+            <div style={{ fontSize:30, fontWeight:800, color:"#fff", marginBottom:6 }}>Welcome back</div>
+            <p style={{ color:"#9ca3af", fontSize:13, marginBottom:24, lineHeight:1.6 }}>Sign in to your account to continue.</p>
+            <form style={{ display:"grid", gap:12 }} onSubmit={handleSubmit}>
               <div style={{ position:"relative" }}>
-                <div style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", pointerEvents:"none" }}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <div style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", pointerEvents:"none" }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 </div>
-                <input name="email" type="email" placeholder="Email address" required className="auth-input-pro" style={{ paddingLeft:40 }}/>
+                <input name="email" type="email" placeholder="Email address" required className="auth-input-pro" style={{ paddingLeft:36, height: 40 }}/>
               </div>
               <div style={{ position:"relative" }}>
-                <div style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", pointerEvents:"none" }}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <div style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", pointerEvents:"none" }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
-                <input name="password" type={showPwd?"text":"password"} placeholder="Password" required className="auth-input-pro" style={{ paddingLeft:40 }}/>
-                <button type="button" onClick={() => setShowPwd(!showPwd)} style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", background:"none", border:0, cursor:"pointer", color:"#4b5563", padding:0 }}>
+                <input name="password" type={showPwd?"text":"password"} placeholder="Password" required className="auth-input-pro" style={{ paddingLeft:36, height: 40 }}/>
+                <button type="button" onClick={() => setShowPwd(!showPwd)} style={{ position:"absolute", right:12, top:"50%", transform:"translateY(-50%)", background:"none", border:0, cursor:"pointer", color:"#4b5563", padding:0 }}>
                   {showPwd
-                    ? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   }
                 </button>
               </div>
               <div style={{ textAlign:"right", marginTop:-4 }}>
                 <Link href="/forgot-password" style={{ fontSize:13, color:"#8b5cf6", fontWeight:500 }}>Forgot password?</Link>
               </div>
-              <button className="auth-btn-pro" type="submit" disabled={status==="loading"}>
+              <button className="auth-btn-pro" type="submit" disabled={status==="loading"} style={{ height: 42 }}>
                 {status==="loading"
                   ? <span style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ animation:"spin 0.8s linear infinite" }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Signing in...</span>
-                  : "Continue →"
+                  : "Continue"
                 }
               </button>
             </form>
             {error && <div className="error-banner"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>{error}</div>}
-            <p style={{ marginTop:24, textAlign:"center", fontSize:14, color:"#6b7280" }}>
+            <p style={{ marginTop:20, textAlign:"center", fontSize:13, color:"#6b7280" }}>
               Don&apos;t have an account?{" "}
               <Link href="/signup" style={{ color:"#8b5cf6", fontWeight:700 }}>Create account</Link>
             </p>
+          </div>
           </div>
         </div>
         <div className="auth-hero-panel"><AuthHero /></div>

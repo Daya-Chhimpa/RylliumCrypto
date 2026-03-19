@@ -109,7 +109,8 @@ footer .hero-content{display:flex;flex-direction:column;align-items:center;text-
 
 /* Auth pages */
 .auth-wrap{min-height:100vh;display:grid;grid-template-columns: 420px 1fr;background:#0a0a1a}
-.auth-side{background:#141428;padding:32px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #1f1f35}
+.auth-side{background:#141428;padding:60px 40px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #1f1f35}
+.auth-side-content{width:100%;max-width:340px;margin:0 auto}
 .auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .auth-brand .logo{width:36px;height:36px;border-radius:9px;color:#fff;background:linear-gradient(135deg,rgba(139,92,246,1) 0%, rgba(124,58,237,1) 100%);display:grid;place-items:center;font-weight:800;box-shadow:0 4px 12px rgba(139,92,246,0.5)}
 .auth-title{font-size:28px;font-weight:800;margin:8px 0;color:#ffffff}
