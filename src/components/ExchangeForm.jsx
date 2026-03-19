@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import { addToast } from "@/store/slices/uiSlice";
 
 const FIAT_OPTIONS = ["USD", "EUR", "GBP", "INR"];
@@ -30,6 +31,9 @@ async function fetchLivePrices() {
 
 export default function ExchangeForm({ onBuy }) {
   const dispatch = useDispatch();
+
+  const router = useRouter();
+  const { user } = useSelector((state) => state.auth);
 
   const [fiatAmount, setFiatAmount] = useState(0);
   const [fiat, setFiat] = useState("EUR");
@@ -61,7 +65,18 @@ export default function ExchangeForm({ onBuy }) {
       return;
     }
 
-    // Proceed to checkout (no KYC block — bypass like PPrince)
+    // KYC check: MUST be approved to proceed
+    if (user?.kycStatus !== 'APPROVED') {
+      dispatch(addToast({
+        type: "warning",
+        title: "KYC Required",
+        description: "Please complete your Identity Verification to buy crypto."
+      }));
+      router.push("/settings");
+      return;
+    }
+
+    // Proceed to checkout
     if (onBuy) {
       onBuy({
         fiatAmount,

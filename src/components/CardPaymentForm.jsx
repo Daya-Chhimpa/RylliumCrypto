@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { preAuthorizePayment, capturePayment, selectPaymentState, resetPaymentState } from "@/store/slices/paymentSlice";
 import { getWallets } from "@/lib/walletService";
@@ -33,6 +34,7 @@ const WalletIcon = () => (
 );
 
 export default function CardPaymentForm({ amount, currency, cryptoAmount, cryptoCurrency, network: initialNetwork, walletAddress: initialWallet, onSuccess }) {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { loading, error, paymentId, paymentStatus } = useSelector(selectPaymentState);
 
@@ -310,12 +312,13 @@ export default function CardPaymentForm({ amount, currency, cryptoAmount, crypto
                 style={inputStyle}
               />
             </FieldGroup>
-            <FieldGroup label="Postal Code">
+            <FieldGroup label="Zipcode">
               <input
                 type="text"
-                placeholder="SW1A 1AA"
+                placeholder="999077"
                 value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
+                onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+                inputMode="numeric"
                 style={inputStyle}
               />
             </FieldGroup>
@@ -347,25 +350,43 @@ export default function CardPaymentForm({ amount, currency, cryptoAmount, crypto
 
           {loadingWallets ? (
             <p style={{ fontSize: "13px", color: "var(--muted, #666)" }}>Loading saved wallets...</p>
-          ) : wallets.length > 0 ? (
-            <FieldGroup label="Select Saved Wallet">
-              <select
-                onChange={handleWalletSelect}
-                value={wallets.some((w) => (w.walletAddress || w.address) === walletAddress) ? walletAddress : "custom"}
-                style={{ ...inputStyle, cursor: "pointer" }}
-              >
-                <option value="custom">-- Enter New Address --</option>
-                {wallets.map((w, i) => (
-                  <option key={i} value={w.walletAddress || w.address}>
-                    {w.network || w.chain}: {(w.walletAddress || w.address).slice(0, 8)}...{(w.walletAddress || w.address).slice(-6)}
-                  </option>
-                ))}
-              </select>
-            </FieldGroup>
-          ) : null}
+          ) : (
+            <>
+              {wallets.length > 0 && (
+                <FieldGroup label="Select Your External Wallet">
+                  <select
+                    onChange={handleWalletSelect}
+                    value={wallets.some((w) => (w.walletAddress || w.address) === walletAddress) ? walletAddress : "custom"}
+                    style={{ ...inputStyle, cursor: "pointer" }}
+                  >
+                    <option value="custom">-- Enter New Address --</option>
+                    {wallets.map((w, i) => (
+                      <option key={i} value={w.walletAddress || w.address}>
+                        {w.network || w.chain}: {(w.walletAddress || w.address).slice(0, 8)}...{(w.walletAddress || w.address).slice(-6)}
+                      </option>
+                    ))}
+                  </select>
+                </FieldGroup>
+              )}
+            </>
+          )}
 
           {(!wallets.some((w) => (w.walletAddress || w.address) === walletAddress)) && (
-            <FieldGroup label="Wallet Address">
+            <FieldGroup 
+              label="Wallet Address"
+              extra={wallets.length === 0 && (
+                <span 
+                  onClick={() => router.push('/wallets')}
+                  style={{ 
+                    fontSize: '10px', color: '#8b5cf6', cursor: 'pointer', 
+                    fontWeight: '700', textDecoration: 'underline', 
+                    textTransform: 'none', letterSpacing: '0'
+                  }}
+                >
+                  Click to add external wallet
+                </span>
+              )}
+            >
               <input
                 type="text"
                 value={walletAddress}
@@ -375,6 +396,7 @@ export default function CardPaymentForm({ amount, currency, cryptoAmount, crypto
               />
             </FieldGroup>
           )}
+
 
           {walletAddress && wallets.some((w) => (w.walletAddress || w.address) === walletAddress) && (
             <div style={{ marginTop: "8px", fontSize: "11px", color: "var(--muted, #666)", wordBreak: "break-all" }}>
@@ -422,16 +444,19 @@ export default function CardPaymentForm({ amount, currency, cryptoAmount, crypto
 }
 
 // Helper Components
-function FieldGroup({ label, children, style = {} }) {
+function FieldGroup({ label, children, style = {}, extra }) {
   return (
     <div style={{ marginBottom: "14px", ...style }}>
-      <label style={{
-        display: "block", fontSize: "10px", fontWeight: "700",
-        color: "var(--muted, #888)", marginBottom: "6px",
-        textTransform: "uppercase", letterSpacing: "0.5px"
-      }}>
-        {label}
-      </label>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: "6px" }}>
+        <label style={{
+          fontSize: "10px", fontWeight: "700",
+          color: "var(--muted, #888)",
+          textTransform: "uppercase", letterSpacing: "0.5px"
+        }}>
+          {label}
+        </label>
+        {extra}
+      </div>
       {children}
     </div>
   );
