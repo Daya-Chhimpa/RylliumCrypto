@@ -35,7 +35,7 @@ export default function ExchangeForm({ onBuy }) {
   const router = useRouter();
   const { user } = useSelector((state) => state.auth);
 
-  const [fiatAmount, setFiatAmount] = useState(0);
+  const [fiatAmount, setFiatAmount] = useState("0");
   const [fiat, setFiat] = useState("EUR");
   const [crypto, setCrypto] = useState("BTC");
   const [prices, setPrices] = useState(null);
@@ -94,12 +94,15 @@ export default function ExchangeForm({ onBuy }) {
           <label className="rl-label">I PAY:</label>
           <div className="rl-input-group">
             <input
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
               className="rl-input"
               value={fiatAmount}
-              onChange={(e) => setFiatAmount(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "" || /^\d*\.?\d*$/.test(val)) {
+                  setFiatAmount(val);
+                }
+              }}
               placeholder="100.00"
             />
             <select
@@ -120,9 +123,10 @@ export default function ExchangeForm({ onBuy }) {
           <label className="rl-label">I GET:</label>
           <div className="rl-input-group">
             <input
-              type="number"
+              type="text"
               className="rl-input"
               value={cryptoAmount.toFixed(8)}
+              disabled
               readOnly
             />
             <select

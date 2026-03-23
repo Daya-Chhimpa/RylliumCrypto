@@ -72,7 +72,7 @@ export default function WalletsPage() {
   return (
     <div className="rl-content">
       <div className="rl-header-group">
-          <h1 className="rl-page-title">Your <span>wallets</span></h1>
+          <h1 className="rl-page-title">Add Your <span>External wallet</span></h1>
           <button className="rl-btn rl-btn-primary desktop-btn" onClick={() => setShowModal(true)}>+ Add Wallet</button>
       </div>
 
@@ -114,7 +114,7 @@ export default function WalletsPage() {
         <div className="modal-overlay">
             <div className="modal">
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
-                    <h3>Add New Wallet</h3>
+                    <h3>Add Your External wallet</h3>
                     <button onClick={()=>setShowModal(false)} style={{background:'none',border:'none',color:'white',fontSize:20,cursor:'pointer'}}>×</button>
                 </div>
                 <form onSubmit={handleCreateWallet}>
